@@ -49,9 +49,16 @@ class MusicMap extends Step with UrlSupport {
 
   // Display all the people in the system.
   get("/people") {
-    <people>
-      {for (person <- allOf(Foaf.Person)) yield <person>{person}</person>}
-    </people>
+    <people>{
+      for (person <- allOf(Foaf.Person)) yield 
+      <person ref={person.uri}>
+        <name>{person/Foaf.givenname}</name>
+        <playsIn>{
+          for (stint <- person/performs) yield
+          <band>{stint/in/Foaf.name}</band>
+        }</playsIn>
+      </person>
+    }</people>
   }
 
   get("/") {
