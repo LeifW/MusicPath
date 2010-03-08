@@ -1,16 +1,18 @@
 package com.portlanddatasystems.musicmap
 
+import scala.xml.ProcInstr
 import com.thinkminimo.step._
-import SceneVocab._
+import Scene._
 import net.croz.scardf._
 
-class MusicMap extends Step {
+class MusicMap extends Step with UrlSupport {
 
-implicit val members = new Model
+implicit val model = new Model
 
 //  before {
 //    contentType = "text/html"
 //  }
+  override def init() = this.model.read("file:///home/leif/Projects/MusicMap/WebOutput/band.ttl", "TURTLE")
 
   get("/:type/:member") {
     <ul>
@@ -27,6 +29,12 @@ implicit val members = new Model
     </span>
   }
 
+  get("/bands") {
+    <bands>
+      for (band &lt;- store.bands) yield <band>{}</band>
+    </bands>
+  }
+
   get("/form") {
     <form action='post' method='POST'>
       Post something: <input name='submission' type='text'/>
@@ -40,10 +48,13 @@ implicit val members = new Model
 
   get("/") {
     <span>
+    //ProcInstr("xml-stylesheet", "text/xsl")
     <h1>Hello!</h1>
     Please make a selection:
-    <div><a href="/bands">bands</a></div>
-    <div><a href="/people">people</a></div>
+    <div><a href={url("/bands")}>bands</a></div>
+    <div><a href={url("/people")}>people</a></div>
     </span>
   }
+
+  protected def contextPath = request.getContextPath
 }
