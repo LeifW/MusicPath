@@ -5,20 +5,23 @@ import com.thinkminimo.step._
 import Scene._
 import net.croz.scardf._
 
-class MusicPath extends Step with UrlSupport {
+class MusicPath extends Step {
   
-  val url = "http://example.org/"
+  val url = "http://musicpath.org/"
+  protected def contextPath = request.getContextPath
   implicit val model = new Model
  
+  override def init = this.model.read("file:///home/leif/band.ttl", "TURTLE")
+
   // Helper functions:
 
   // Put a <?xsl-stylesheet ?> processing-instruction at the top of the response.
-  def template(content:NodeSeq):NodeSeq = ProcInstr("xml-stylesheet", "type='text/xsl' href='edit.xsl'") ++ Text("\n") ++ content
+  def template(content:NodeSeq):NodeSeq = ProcInstr("xml-stylesheet", "type='text/xsl' href='/stylesheets/root.xsl'")++Text("\n")++content
   // Select all things of a given RDF:type.
   def allOf(category:Res) = Sparql selectAllX asRes where( (X, RDF.Type, category) ) from model
   
   def bandView(band:Res) = 
-        <band ref={band.uri}>
+        <band ref={band.jResource.getLocalName}>
           <name>{band/Foaf.name}</name>
           <members>{
             for (stint <- band/staffed) yield
@@ -28,7 +31,7 @@ class MusicPath extends Step with UrlSupport {
         </band>
 
   def personView(person:Res) =
-    <person ref={person.uri}>
+    <person ref={person.jResource.getLocalName}>
       <name>{person/Foaf.givenname}</name>
       <playsIn>{
         for (stint <- person/performs) yield
@@ -39,37 +42,37 @@ class MusicPath extends Step with UrlSupport {
   before {
     contentType = "application/xml"
   }
-  override def init = this.model.read("file:///home/leif/band.ttl", "TURTLE")
 
+  get("/path") {"The current path is: " ++ contextPath}
   // Display all the bands in the system.
-  get("/bands") {
-    <bands>{
+  get("/bands/?") { template(
+    <bands title="Bands">{
 //      for (band <- allOf(Mo.MusicGroup) ) yield 
         allOf(Mo.MusicGroup) map bandView 
     }</bands>
-  }
+  )}
 
-  get("/bands/:band") {
+  get("/bands/:band") { template(
     bandView(Res(url+"bands/"+params(":band")))
-  }
+  )}
 
   // Display all the people in the system.
-  get("/people") {
+  get("/people/?") { template(
     <people>{ allOf(Foaf.Person) map personView }</people>
-  }
+  )}
 
-  get("/people/:person") {
+  get("/people/:person") { template(
     personView(Res(url+"people/"+params(":person")))
-  }
+  )}
 
   get("/") {
-    template(<span>
+    template( 
+    <span title="Home">
     <h1>Hello!</h1>
     Please make a selection: {request.getContextPath}
-    <div><a href={url("/bands")}>bands</a></div>
-    <div><a href={url("/people")}>people</a></div>
+    <div><a href="/bands">bands</a></div>
+    <div><a href="/people">people</a></div>
     </span>)
   }
 
-  protected def contextPath = request.getContextPath
 }

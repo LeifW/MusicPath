@@ -1,7 +1,7 @@
 package org.musicpath
 import net.croz.scardf.Vocabulary
 
-object Scene extends Vocabulary("http://example.org/scene#") {
+object Scene extends Vocabulary("http://musicpath.org/scene#") {
   val Band = pRes("Band")
   val Stint = pRes("Stint")
 

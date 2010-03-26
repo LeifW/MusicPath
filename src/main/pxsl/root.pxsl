@@ -1,0 +1,25 @@
+<<<?xml version="1.0" encoding="UTF-8"?>>>
+
+xsl:stylesheet -version=1.0 -xmlns:xsl=http://www.w3.org/1999/XSL/Transform
+
+  template /
+    html
+      head
+        title <<MusicPath: >>
+          value-of */@title
+      body
+        apply-templates
+
+  template bands
+    ul
+      apply-templates band
+   
+  template band
+    li
+      h4
+        a -href={concat('bands/',@ref)}
+          value-of name
+       
+  template @*|*  -- Identity template
+    copy
+      apply-templates @*|node()

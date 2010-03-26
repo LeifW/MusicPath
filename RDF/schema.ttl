@@ -4,9 +4,9 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 @prefix mo: <http://purl.org/ontology/mo/mit#> .
-@prefix bands: <http://example.org/bands/> .
-@prefix people: <http://example.org/people/> .
-@prefix : <http://example.org/scene#> .
+@prefix bands: <http://musicpath.org/bands/> .
+@prefix people: <http://musicpath.org/people/> .
+@prefix : <http://musicpath.org/scene#> .
 
 <file:///home/leif/Projects/MusicMap/schema.ttl>
     a owl:Ontology .
