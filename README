@@ -1,5 +1,8 @@
 MusicPath
 
+Please, contribute ideas, modeling, UI suggestions!
+Where should this go, what should it be used for?
+
 Written in Scala using:
 Dependencies:
  Step (minimalist web framework inspired by Sinatra)
