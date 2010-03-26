@@ -1,0 +1,9 @@
+MusicPath
+
+Written in Scala using:
+Dependencies:
+ Step (minimalist web framework inspired by Sinatra)
+ http://github.com/alandipert/step
+
+ Scardf (DSL wrapper for Jena)
+ http://code.google.com/p/scardf
