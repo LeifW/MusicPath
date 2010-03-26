@@ -45,9 +45,9 @@ class MusicPath extends Step {
 
   get("/path") {"The current path is: " ++ contextPath}
   // Display all the bands in the system.
-  get("/bands/?") { template(
+
+  get("/bands") { template(
     <bands title="Bands">{
-//      for (band <- allOf(Mo.MusicGroup) ) yield 
         allOf(Mo.MusicGroup) map bandView 
     }</bands>
   )}
@@ -57,8 +57,8 @@ class MusicPath extends Step {
   )}
 
   // Display all the people in the system.
-  get("/people/?") { template(
-    <people>{ allOf(Foaf.Person) map personView }</people>
+  get("/people") { template(
+    <people title="People">{ allOf(Foaf.Person) map personView }</people>
   )}
 
   get("/people/:person") { template(

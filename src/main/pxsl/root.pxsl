@@ -17,7 +17,7 @@ xsl:stylesheet -version=1.0 -xmlns:xsl=http://www.w3.org/1999/XSL/Transform
   template band
     li
       h4
-        a -href={concat('bands/',@ref)}
+        a -href={concat('/bands/',@ref)}
           value-of name
        
   template @*|*  -- Identity template

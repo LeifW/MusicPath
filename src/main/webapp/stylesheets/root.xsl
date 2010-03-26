@@ -22,7 +22,7 @@
   <xsl:template match="band">
     <li>
       <h4>
-        <a href="{concat('bands/',@ref)}">
+        <a href="{concat('/bands/',@ref)}">
           <xsl:value-of select="name"/>
         </a>
       </h4>
