@@ -5,12 +5,12 @@
 <web-app>
 
   <servlet>
-    <servlet-name>MusicMap</servlet-name>
-    <servlet-class>com.portlanddatasystems.musicmap.MusicMap</servlet-class>
+    <servlet-name>MusicPath</servlet-name>
+    <servlet-class>org.musicpath.MusicPath</servlet-class>
   </servlet>
 
   <servlet-mapping>
-    <servlet-name>MusicMap</servlet-name>
+    <servlet-name>MusicPath</servlet-name>
     <url-pattern>/*</url-pattern>
   </servlet-mapping>
 

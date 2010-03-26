@@ -1,4 +1,4 @@
-package com.portlanddatasystems.musicmap
+package org.musicpath
 import net.croz.scardf.Vocabulary
 
 object Scene extends Vocabulary("http://example.org/scene#") {
@@ -8,7 +8,7 @@ object Scene extends Vocabulary("http://example.org/scene#") {
   val by = pProp("by")
   val in = pProp("in")
   val name = pProp("name")
-  val performer = pProp("performer")
+  val staffed = pProp("staffed")
   val performs = pProp("performs")
   val plays = pProp("plays")
   val started = pProp("started")
@@ -26,3 +26,20 @@ object Mo extends Vocabulary("http://purl.org/ontology/mo/mit#") {
   val Electric_Guitar = pRes("Electric_Guitar")
   val Electric_bass_guitar = pRes("Electric_bass_guitar")
 }
+
+object Apf extends Vocabulary("http://jena.hpl.hp.com/ARQ/property#") {
+  val splitIRI = pProp("splitIRI")
+  val splitURI = pProp("splitURI")
+}
+
+/*
+Sparql select ('p, 'local, 'prefix) where (
+  ('p, performs, 'stint), 
+  ('stint, in, 'band), 
+  ('band, Apf.splitIRI, 'list), 
+  ('list, RDF.first, 'prefix), 
+  ('list, RDF.rest, 'second), 
+  ('second, RDF.first, 'local), 
+  ('second, RDF.rest, 'rest)
+)
+*/
