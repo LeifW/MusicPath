@@ -1,0 +1,48 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix mo: <http://purl.org/ontology/mo/mit#> .
+@prefix bands: <http://example.org/bands/> .
+@prefix people: <http://example.org/people/> .
+@prefix : <http://example.org/scene#> .
+
+<file:///home/leif/Projects/MusicMap/schema.ttl>
+    a owl:Ontology .
+
+:Band
+    a owl:Class .
+
+:Stint
+    a owl:Class .
+
+:performs
+    a owl:ObjectProperty ;
+    rdfs:domain foaf:Person ;
+    rdfs:range :Stint ;
+    owl:inverseOf :by .
+
+:in
+    a owl:ObjectProperty ;
+    rdfs:domain :Stint ;
+    rdfs:range mo:MusicGroup ;
+    owl:inverseOf :staffed .
+
+:by
+    a owl:ObjectProperty .
+
+:staffed
+    a owl:ObjectProperty .
+
+:plays
+    a owl:ObjectProperty .
+
+:name
+    a owl:DatatypeProperty .
+
+:started
+    a owl:DatatypeProperty .
+
+:ended
+    a owl:DatatypeProperty .
