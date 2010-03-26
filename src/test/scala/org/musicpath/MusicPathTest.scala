@@ -15,8 +15,9 @@ class MusicPathTest extends StepSuite with ShouldMatchers {
   }
 }
 
+/*
 class MusicSpec extends Specification with StepTests {
-  route(classOf[MusicPath], "/*")
+  route(classOf[MusicPath], "/ *")
 
   "TheApp when using GET" should {
     "/ should return 'index'" in {
@@ -27,4 +28,5 @@ class MusicSpec extends Specification with StepTests {
     }
   }
 }
+*/
 // vim: set ts=2 sw=2 et:
