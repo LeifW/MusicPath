@@ -1,0 +1,114 @@
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix mo: <http://purl.org/ontology/mo/mit#> .
+@prefix dbmyspace: <http://dbtune.org/myspace/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix : <http://example.org/scene#> .
+@prefix bands: <http://example.org/bands/> .
+@prefix people: <http://example.org/people/> .
+
+@base <http://example.org/> .
+
+people:melissa a foaf:Person ;
+    foaf:givenname "Melissa" ;
+    owl:sameAs dbmyspace:vomitheart ; 
+    :performs [
+        a :Stint ;
+        :in bands:ootg ;
+        :plays mo:Electric_Guitar ;
+        :started "2004"
+    ] ,
+    [
+        a :Stint ;
+        :in bands:sei_hexe ;
+        :plays mo:Electric_Guitar ;
+        :started "2006"
+    ] ,
+    [
+        a :Stint ;
+        :in bands:cull ;
+        :plays mo:Electric_Guitar ;
+        :started "2007"
+    ] ,
+    [
+        a :Stint ;
+        :in bands:sick_sick_sister ;
+        :plays mo:Electric_bass_guitar; 
+        :started "2007"
+    ] ,
+    [
+        a :Stint ;
+        :in bands:sickie_sickie ;
+        :plays mo:Electric_Guitar ;
+        :started "2002" ;
+        :ended "2005"
+    ] .
+
+bands:ootg a mo:MusicGroup ;
+    foaf:name "Order of the Gash" ;
+    owl:sameAs dbmyspace:orderofthegash .
+
+bands:cull a mo:MusicGroup ;
+    foaf:name "Cull" ;
+    owl:sameAs dbmyspace:cullpdx .
+
+bands:anonremora a mo:MusicGroup ;
+    foaf:name "Anon Remora" ;
+    owl:sameAs dbmyspace:anonremora .
+
+bands:sei_hexe a mo:MusicGroup ;
+    owl:sameAs dbmyspace:seihexe .
+
+bands:honduran a mo:MusicGroup ;
+    owl:sameAs dbmyspace:nothonduran .
+
+bands:transient a mo:MusicGroup ;
+    owl:sameAs dbmyspace:transientbrutality .
+
+bands:purplerhinestoneeagle a mo:MusicGroup ;
+    owl:sameAs dbmyspace:purplerhinestoneeagle .
+
+bands:drats a mo:MusicGroup ;
+    foaf:name "Drats!!!" .
+
+people:dylan a foaf:Person ;
+    foaf:givenname "Dylan" ;
+    :performs [
+        a :Stint ;
+        :in bands:cull ;
+        :plays mo:Electric_Guitar ;
+        :started "2007"
+    ] ,
+    [
+        a :Stint ;
+        :in bands:anonremora ;
+        :plays mo:Electric_Guitar ;
+        :started "2006"
+    ] .
+
+people:jacqui a foaf:Person ;
+    foaf:givenname "Jacqui" ;
+    owl:sameAs dbmyspace:beastiebeast .
+
+people:ayla a foaf:Person ;
+    foaf:givenname "Ayla" ;
+    owl:sameAs dbmyspace:veganayla ;
+    :performs [
+        a :Stint ;
+        :in bands:anonremora ;
+        :plays mo:Electric_Guitar ;
+        :plays mo:Voice ;
+        :started "2006"
+    ] .
+
+people:chairman a foaf:Person ;
+    foaf:givenname "Chairman" ;
+    :performs [ a :Stint ;
+        :in bands:the_chair_project 
+    ] ,
+    [ a :Stint ;
+        :in bands:drats
+    ] ,
+    [ a :Stint ;
+        :in bands:nasalrod
+    ] .
+     
