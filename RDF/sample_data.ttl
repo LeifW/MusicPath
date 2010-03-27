@@ -2,11 +2,11 @@
 @prefix mo: <http://purl.org/ontology/mo/mit#> .
 @prefix dbmyspace: <http://dbtune.org/myspace/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
-@prefix : <http://example.org/scene#> .
-@prefix bands: <http://example.org/bands/> .
-@prefix people: <http://example.org/people/> .
+@prefix : <http://musicpath.org/scene#> .
+@prefix bands: <http://musicpath.org/bands/> .
+@prefix people: <http://musicpath.org/people/> .
 
-@base <http://example.org/> .
+@base <http://musicpath.org/> .
 
 people:melissa a foaf:Person ;
     foaf:givenname "Melissa" ;

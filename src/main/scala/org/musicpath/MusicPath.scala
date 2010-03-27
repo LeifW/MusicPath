@@ -1,70 +1,51 @@
 package org.musicpath
 
 import scala.xml.{ProcInstr,NodeSeq,Text}
-import java.net.URI
 import com.thinkminimo.step._
-import Scene._
 import net.croz.scardf._
+import Scene._
 
+// This class mostly defines routes.  A couple view helpers are factored out into the "View" object.
 class MusicPath extends Step {
   
-  implicit def convert(uri:String):URI = new URI(uri)
   val url = "http://musicpath.org/"
   protected def contextPath = request.getContextPath
   implicit val model = new Model
  
-  override def init = this.model.read("file:///home/leif/band.ttl", "TURTLE")
+  override def init = this.model.read("http://github.com/LeifW/MusicPath/raw/master/RDF/sample_data.ttl", "TURTLE")
 
   // Helper functions:
 
   // Put a <?xsl-stylesheet ?> processing-instruction at the top of the response.
-  def template(content:NodeSeq):NodeSeq = ProcInstr("xml-stylesheet", "type='text/xsl' href='/stylesheets/root.xsl'")++Text("\n")++content
+  def template(content:NodeSeq):NodeSeq = ProcInstr("xml-stylesheet", "type='text/xsl' href='/stylesheets/root.xsl'")++
+                                          Text("\n")++
+                                          content
+
   // Select all things of a given RDF:type.
   def allOf(category:Res) = Sparql selectAllX asRes where( (X, RDF.Type, category) ) from model
   
-  def bandView(band:Res) = 
-        <band ref={band.uri.getPath}>
-          <name>{band/Foaf.name}</name>
-          <members>{
-            for (stint <- band/staffed) yield
-            <member>{stint/by/Foaf.givenname
-            }</member>
-          }</members>
-        </band>
-
-  def personView(person:Res) =
-    <person ref={person.uri.getPath}>
-      <name>{person/Foaf.givenname}</name>
-      <plays>{
-        for (stint <- person/performs) yield
-        <stint><in ref={(stint/in/asRes).uri.getPath}>{stint/in/Foaf.name}</in><instrument>(stint/plays/asRes).uri</instrument></stint>
-      }</plays>
-    </person>
-
   before {
     contentType = "application/xml"
   }
 
-  get("/path") {"The current path is: " ++ contextPath}
   // Display all the bands in the system.
-
   get("/bands") { template(
     <bands title="Bands">{
-        allOf(Mo.MusicGroup) map bandView 
+        allOf(Mo.MusicGroup) map View.band
     }</bands>
   )}
 
   get("/bands/:band") { template(
-    bandView(Res(url+"bands/"+params(":band")))
+    View band Res(url+"bands/"+params(":band"))
   )}
 
   // Display all the people in the system.
   get("/people") { template(
-    <people title="People">{ allOf(Foaf.Person) map personView }</people>
+    <people title="People">{ allOf(Foaf.Person) map View.person }</people>
   )}
 
   get("/people/:person") { template(
-    personView(Res(url+"people/"+params(":person")))
+    View person Res(url+"people/"+params(":person"))
   )}
 
   get("/") {
