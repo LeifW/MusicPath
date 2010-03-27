@@ -1,12 +1,14 @@
 package org.musicpath
 
 import scala.xml.{ProcInstr,NodeSeq,Text}
+import java.net.URI
 import com.thinkminimo.step._
 import Scene._
 import net.croz.scardf._
 
 class MusicPath extends Step {
   
+  implicit def convert(uri:String):URI = new URI(uri)
   val url = "http://musicpath.org/"
   protected def contextPath = request.getContextPath
   implicit val model = new Model
@@ -21,7 +23,7 @@ class MusicPath extends Step {
   def allOf(category:Res) = Sparql selectAllX asRes where( (X, RDF.Type, category) ) from model
   
   def bandView(band:Res) = 
-        <band ref={band.jResource.getLocalName}>
+        <band ref={band.uri.getPath}>
           <name>{band/Foaf.name}</name>
           <members>{
             for (stint <- band/staffed) yield
@@ -31,12 +33,12 @@ class MusicPath extends Step {
         </band>
 
   def personView(person:Res) =
-    <person ref={person.jResource.getLocalName}>
+    <person ref={person.uri.getPath}>
       <name>{person/Foaf.givenname}</name>
-      <playsIn>{
+      <plays>{
         for (stint <- person/performs) yield
-        <band>{stint/in/Foaf.name}<instrument>(stint/plays/asRes).uri</instrument></band>
-      }</playsIn>
+        <stint><in ref={(stint/in/asRes).uri.getPath}>{stint/in/Foaf.name}</in><instrument>(stint/plays/asRes).uri</instrument></stint>
+      }</plays>
     </person>
 
   before {

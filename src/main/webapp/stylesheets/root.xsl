@@ -13,6 +13,28 @@
     </html>
   </xsl:template>
 
+  <xsl:template match="people">
+    <ul>
+      <xsl:apply-templates select="person"/>
+    </ul>
+  </xsl:template>
+
+  <xsl:template match="person">
+    <li>
+      <h4>
+        <a href="{@ref}">
+          <xsl:value-of select="name"/>
+        </a>
+      </h4>
+Plays:<xsl:apply-templates select="plays/stint"/>
+    </li>
+  </xsl:template>
+
+  <xsl:template match="stint">
+    <xsl:value-of select="instrument"/>
+ in <xsl:apply-templates select="in"/>
+  </xsl:template>
+
   <xsl:template match="bands">
     <ul>
       <xsl:apply-templates select="band"/>
@@ -22,7 +44,7 @@
   <xsl:template match="band">
     <li>
       <h4>
-        <a href="{concat('/bands/',@ref)}">
+        <a href="{@ref}">
           <xsl:value-of select="name"/>
         </a>
       </h4>

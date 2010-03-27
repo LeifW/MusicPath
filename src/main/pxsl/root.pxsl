@@ -10,6 +10,23 @@ xsl:stylesheet -version=1.0 -xmlns:xsl=http://www.w3.org/1999/XSL/Transform
       body
         apply-templates
 
+  template people
+    ul
+      apply-templates person
+
+  template person
+    li
+      h4
+        a -href={@ref}
+          value-of name
+      <<Plays:>>
+      apply-templates plays/stint
+  
+  template stint
+    value-of instrument
+    << in >>
+    apply-templates in
+
   template bands
     ul
       apply-templates band
@@ -17,7 +34,7 @@ xsl:stylesheet -version=1.0 -xmlns:xsl=http://www.w3.org/1999/XSL/Transform
   template band
     li
       h4
-        a -href={concat('/bands/',@ref)}
+        a -href={@ref}
           value-of name
        
   template @*|*  -- Identity template
