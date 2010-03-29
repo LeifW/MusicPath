@@ -3,6 +3,8 @@ package org.musicpath
 import scala.xml.{ProcInstr,NodeSeq,Text}
 import com.thinkminimo.step._
 import net.croz.scardf._
+import com.hp.hpl.jena.rdf.model.ModelFactory
+import com.hp.hpl.jena.ontology.OntModelSpec
 import Scene._
 
 // This class mostly defines routes.  A couple view helpers are factored out into the "View" object.
@@ -10,9 +12,13 @@ class MusicPath extends Step {
   
   val url = "http://musicpath.org/"
   protected def contextPath = request.getContextPath
-  implicit val model = new Model
- 
-  override def init = this.model.read("http://github.com/LeifW/MusicPath/raw/master/RDF/sample_data.ttl", "TURTLE")
+  implicit val model = new Model( ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MICRO_RULE_INF) ) withPrefix url
+
+  // Load the initial sample data, and the schema.
+  override def init {
+    model.read("http://github.com/LeifW/MusicPath/raw/master/RDF/schema.ttl", "TURTLE")
+    model.read("http://github.com/LeifW/MusicPath/raw/master/RDF/sample_data.ttl", "TURTLE")
+  }
 
   // Helper functions:
 
@@ -36,7 +42,7 @@ class MusicPath extends Step {
   )}
 
   get("/bands/:band") { template(
-    View band Res(url+"bands/"+params(":band"))
+    View band Res("bands/"+params(":band"))
   )}
 
   // Display all the people in the system.
@@ -45,7 +51,7 @@ class MusicPath extends Step {
   )}
 
   get("/people/:person") { template(
-    View person Res(url+"people/"+params(":person"))
+    View person Res("people/"+params(":person"))
   )}
 
   get("/") {

@@ -2,7 +2,7 @@ package org.musicpath
 
 import com.thinkminimo.step._
 import org.scalatest.matchers.ShouldMatchers
-import org.specs._
+//import org.specs._
 
 class MusicPathTest extends StepSuite with ShouldMatchers {
   route(classOf[MusicPath], "/*")
