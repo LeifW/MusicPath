@@ -50,7 +50,7 @@ class MusicPath extends Step {
 
   get("/") {
     template( 
-    <span title="Home">
+    <span title="Home" xmlns="http://www.w3.org/1999/xhtml">
     <h1>Hello!</h1>
     Please make a selection: {request.getContextPath}
     <div><a href="/bands">bands</a></div>
