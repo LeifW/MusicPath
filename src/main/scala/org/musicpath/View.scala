@@ -13,7 +13,7 @@ object View {
         <band ref={band.uri.getPath}>
           <name>{band/Foaf.name}</name>
           <members>{
-            for (stint <- band/staffed) yield
+            for (stint <- band/position) yield
             <member>{stint/by/Foaf.givenname
             }</member>
           }</members>

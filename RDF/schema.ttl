@@ -27,12 +27,12 @@
     a owl:ObjectProperty ;
     rdfs:domain :Stint ;
     rdfs:range mo:MusicGroup ;
-    owl:inverseOf :staffed .
+    owl:inverseOf :position .
 
 :by
     a owl:ObjectProperty .
 
-:staffed
+:position
     a owl:ObjectProperty .
 
 :plays

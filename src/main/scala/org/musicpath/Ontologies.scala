@@ -8,7 +8,7 @@ object Scene extends Vocabulary("http://musicpath.org/scene#") {
   val by = pProp("by")
   val in = pProp("in")
   val name = pProp("name")
-  val staffed = pProp("staffed")
+  val position = pProp("position")
   val performs = pProp("performs")
   val plays = pProp("plays")
   val started = pProp("started")

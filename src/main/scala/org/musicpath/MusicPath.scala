@@ -5,20 +5,22 @@ import com.thinkminimo.step._
 import net.croz.scardf._
 import com.hp.hpl.jena.rdf.model.ModelFactory
 import com.hp.hpl.jena.ontology.OntModelSpec
+import com.hp.hpl.jena.tdb.TDBFactory
 import Scene._
 
 // This class mostly defines routes.  A couple view helpers are factored out into the "View" object.
 class MusicPath extends Step {
   
+  implicit var model:Model = null
   val url = "http://musicpath.org/"
   protected def contextPath = request.getContextPath
-  implicit val model = new Model( ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MICRO_RULE_INF) ) withPrefix url
 
-  // Load the initial sample data, and the schema.
   override def init {
-    model.read("http://github.com/LeifW/MusicPath/raw/master/RDF/schema.ttl", "TURTLE")
-    model.read("http://github.com/LeifW/MusicPath/raw/master/RDF/sample_data.ttl", "TURTLE")
+    val db = TDBFactory.createModel("tdb_store.db")
+    model = new Model( ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MICRO_RULE_INF, db) ) withPrefix url
   }
+
+  override def destroy = model.close()
 
   // Helper functions:
 
@@ -32,6 +34,13 @@ class MusicPath extends Step {
   
   before {
     contentType = "application/xml"
+  }
+
+  // Load the schema, and the initial sample data.
+  get("/load") {
+    model.read("http://github.com/LeifW/MusicPath/raw/master/RDF/schema.ttl", "TURTLE")
+    model.read("http://github.com/LeifW/MusicPath/raw/master/RDF/sample_data.ttl", "TURTLE")
+    "Stuff Loaded!"
   }
 
   // Display all the bands in the system.
