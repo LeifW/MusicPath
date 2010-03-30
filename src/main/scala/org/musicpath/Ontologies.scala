@@ -25,6 +25,7 @@ object Mo extends Vocabulary("http://purl.org/ontology/mo/mit#") {
   val MusicGroup = pRes("MusicGroup")
   val Electric_Guitar = pRes("Electric_Guitar")
   val Electric_bass_guitar = pRes("Electric_bass_guitar")
+  val Drumset = pRes("Drumset")
 }
 
 object Apf extends Vocabulary("http://jena.hpl.hp.com/ARQ/property#") {

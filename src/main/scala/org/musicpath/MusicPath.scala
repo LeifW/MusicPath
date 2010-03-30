@@ -1,12 +1,12 @@
 package org.musicpath
 
 import scala.xml.{ProcInstr,NodeSeq,Text}
-import com.thinkminimo.step._
-import net.croz.scardf._
-import com.hp.hpl.jena.rdf.model.ModelFactory
-import com.hp.hpl.jena.ontology.OntModelSpec
-import com.hp.hpl.jena.tdb.TDBFactory
-import Scene._
+import com.thinkminimo.step._                  // Web framework
+import net.croz.scardf._                       // Jena wrapper
+import com.hp.hpl.jena.rdf.model.ModelFactory  // Inferencing
+import com.hp.hpl.jena.ontology.OntModelSpec   // Inferencing
+import com.hp.hpl.jena.tdb.TDBFactory          // DB Store
+import Scene._                                 // Predicates in musicpath ontology
 
 // This class mostly defines routes.  A couple view helpers are factored out into the "View" object.
 class MusicPath extends Step {
@@ -38,16 +38,20 @@ class MusicPath extends Step {
 
   // Load the schema, and the initial sample data.
   get("/load") {
-    model.read("http://github.com/LeifW/MusicPath/raw/master/RDF/schema.ttl", "TURTLE")
-    model.read("http://github.com/LeifW/MusicPath/raw/master/RDF/sample_data.ttl", "TURTLE")
+    //model.read("http://github.com/LeifW/MusicPath/raw/master/RDF/schema.ttl", "TURTLE")
+    //model.read("http://github.com/LeifW/MusicPath/raw/master/RDF/sample_data.ttl", "TURTLE")
+    model.read("file:///home/leif/Scala/musicpath/RDF/schema.ttl", "TURTLE")
+    model.read("file:///home/leif/Scala/musicpath/RDF/sample_data.ttl", "TURTLE")
     "Stuff Loaded!"
+  }
+  get("/load/:format/:url") {
+    model read(params(":url"), params(":format").toUpperCase)
+    params(":url") ++ " Loaded!"
   }
 
   // Display all the bands in the system.
-  get("/bands") { template(
-    <bands title="Bands">{
-        allOf(Mo.MusicGroup) map View.band
-    }</bands>
+  get("/bands/?") { template(
+    <bands title="Bands">{ allOf(Mo.MusicGroup) map View.band }</bands>
   )}
 
   get("/bands/:band") { template(
@@ -55,7 +59,7 @@ class MusicPath extends Step {
   )}
 
   // Display all the people in the system.
-  get("/people") { template(
+  get("/people/?") { template(
     <people title="People">{ allOf(Foaf.Person) map View.person }</people>
   )}
 

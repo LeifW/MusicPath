@@ -9,22 +9,32 @@ object View {
   
   implicit def convert(uri:String):URI = new URI(uri)
 
+  def ref(thing:Res):String = thing.uri.getPath
+
+  def instruments(stint:Node) = for (instr <- stint/plays) yield <instr>{instr}</instr>
+  //def toXml(collection:Node, name:String) = for (thing <- collection) yield Elem(
+
   def band(band:Res) = 
-        <band ref={band.uri.getPath}>
+        <band ref={ref(band)}>
           <name>{band/Foaf.name}</name>
           <members>{
             for (stint <- band/position) yield
-            <member>{stint/by/Foaf.givenname
-            }</member>
+              <member ref={ref(stint/by/asRes)}>
+                <name>{stint/by/Foaf.givenname}</name>
+              {instruments(stint)
+              }</member>
           }</members>
         </band>
 
   def person(person:Res) =
-    <person ref={person.uri.getPath}>
+    <person ref={ref(person)}>
       <name>{person/Foaf.givenname}</name>
       <plays>{
         for (stint <- person/performs) yield
-        <stint><in ref={(stint/in/asRes).uri.getPath}>{stint/in/Foaf.name}</in><instrument>(stint/plays/asRes).uri</instrument></stint>
+        <stint>
+          <in ref={ref(stint/in/asRes)}>{stint/in/Foaf.name}</in>
+          {instruments(stint)}
+        </stint>
       }</plays>
     </person>
 }

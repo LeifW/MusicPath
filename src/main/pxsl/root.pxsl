@@ -36,7 +36,19 @@ xsl:stylesheet -version=1.0 -xmlns:xsl=http://www.w3.org/1999/XSL/Transform -xml
       h4
         a -href={@ref}
           value-of name
-       
+        text <<: >>
+        apply-templates members/member
+          
+  template member
+    a -href={@ref}
+      value-of name
+     if instr
+       <<(>>
+       apply-templates instr
+       <<)>>
+    if position()!=last()
+      <<, >>
+
   template @*|xhtml:*  -- Copy XHTML through unscathed
     copy
       apply-templates @*|node()

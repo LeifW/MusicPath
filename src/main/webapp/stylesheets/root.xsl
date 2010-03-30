@@ -47,10 +47,20 @@ Plays:<xsl:apply-templates select="plays/stint"/>
         <a href="{@ref}">
           <xsl:value-of select="name"/>
         </a>
+        <xsl:text>: </xsl:text>
+        <xsl:apply-templates select="members/member"/>
       </h4>
     </li>
   </xsl:template>
 
+  <xsl:template match="member">
+    <a href="{@ref}">
+      <xsl:value-of select="name"/>
+     <xsl:if test="instr">(<xsl:apply-templates select="instr"/>
+)</xsl:if>
+    </a>
+    <xsl:if test="position()!=last()">, </xsl:if>
+  </xsl:template>
   <xsl:template match="@*|xhtml:*">                       <!-- Copy XHTML through unscathed -->
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>
