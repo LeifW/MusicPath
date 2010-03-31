@@ -30,7 +30,8 @@ class MusicPath extends Step {
                                           content
 
   // Select all things of a given RDF:type.
-  def allOf(category:Res) = Sparql selectAllX asRes where( (X, RDF.Type, category) ) from model
+  //def allOf(category:Res) = Sparql selectAllX asRes where( (X, RDF.Type, category) ) from model
+  def allOf(category:Res) = model.listRes(RDF.Type, category)
   
   before {
     contentType = "application/xml"
@@ -38,10 +39,8 @@ class MusicPath extends Step {
 
   // Load the schema, and the initial sample data.
   get("/load") {
-    //model.read("http://github.com/LeifW/MusicPath/raw/master/RDF/schema.ttl", "TURTLE")
-    //model.read("http://github.com/LeifW/MusicPath/raw/master/RDF/sample_data.ttl", "TURTLE")
-    model.read("file:///home/leif/Scala/musicpath/RDF/schema.ttl", "TURTLE")
-    model.read("file:///home/leif/Scala/musicpath/RDF/sample_data.ttl", "TURTLE")
+    model.read("http://github.com/LeifW/MusicPath/raw/master/RDF/schema.ttl", "TURTLE")
+    model.read("http://github.com/LeifW/MusicPath/raw/master/RDF/sample_data.ttl", "TURTLE")
     "Stuff Loaded!"
   }
   get("/load/:format/:url") {

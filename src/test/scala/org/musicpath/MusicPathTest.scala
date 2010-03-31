@@ -13,6 +13,22 @@ class MusicPathTest extends StepSuite with ShouldMatchers {
       body should include ("select")
     }
   }
+  test("GET /bands should have something about Anon Remora having Ayla on guitar") {
+    get("/bands") {
+      status should equal (200)
+      body should include ("Anon Remora")
+      body should include ("Ayla")
+      body should include ("Guitar")
+    }
+  }
+  test("GET /people should have something about Ayla playing guitar in Anon Remora") {
+    get("/people") {
+      status should equal (200)
+      body should include ("Ayla")
+      body should include ("Guitar")
+      body should include ("Anon Remora")
+    }
+  }
 }
 
 /*

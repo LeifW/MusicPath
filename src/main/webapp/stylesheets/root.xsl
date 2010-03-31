@@ -56,9 +56,9 @@ Plays:<xsl:apply-templates select="plays/stint"/>
   <xsl:template match="member">
     <a href="{@ref}">
       <xsl:value-of select="name"/>
-     <xsl:if test="instr">(<xsl:apply-templates select="instr"/>
-)</xsl:if>
     </a>
+    <xsl:if test="instr">(<xsl:apply-templates select="instr"/>
+)</xsl:if>
     <xsl:if test="position()!=last()">, </xsl:if>
   </xsl:template>
   <xsl:template match="@*|xhtml:*">                       <!-- Copy XHTML through unscathed -->
