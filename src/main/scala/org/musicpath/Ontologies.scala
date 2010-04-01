@@ -1,5 +1,6 @@
 package org.musicpath
 import net.croz.scardf.Vocabulary
+import com.hp.hpl.jena.vocabulary.{OWL => jOWL}
 
 object Scene extends Vocabulary("http://musicpath.org/scene#") {
   val Band = pRes("Band")
@@ -14,18 +15,22 @@ object Scene extends Vocabulary("http://musicpath.org/scene#") {
   val started = pProp("started")
 }
 
-object Foaf extends Vocabulary("http://xmlns.com/foaf/0.1/") {
+object FOAF extends Vocabulary("http://xmlns.com/foaf/0.1/") {
   val Person = pRes("Person")
 
   val givenname = pProp("givenname")
   val name = pProp("name")
 }
 
-object Mo extends Vocabulary("http://purl.org/ontology/mo/mit#") {
+object MO extends Vocabulary("http://purl.org/ontology/mo/mit#") {
   val MusicGroup = pRes("MusicGroup")
   val Electric_Guitar = pRes("Electric_Guitar")
   val Electric_bass_guitar = pRes("Electric_bass_guitar")
   val Drumset = pRes("Drumset")
+}
+
+object OWL extends Vocabulary( jOWL.getURI ) {
+  val sameAs = wProp( jOWL.sameAs )
 }
 
 object Apf extends Vocabulary("http://jena.hpl.hp.com/ARQ/property#") {

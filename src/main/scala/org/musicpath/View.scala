@@ -16,11 +16,11 @@ object View {
 
   def band(band:Res) = 
         <band ref={ref(band)}>
-          <name>{band/Foaf.name}</name>
+          <name>{band/FOAF.name}</name>
           <members>{
             for (stint <- band/position) yield
               <member ref={ref(stint/by/asRes)}>
-                <name>{stint/by/Foaf.givenname}</name>
+                <name>{stint/by/FOAF.givenname}</name>
               {instruments(stint)
               }</member>
           }</members>
@@ -28,11 +28,11 @@ object View {
 
   def person(person:Res) =
     <person ref={ref(person)}>
-      <name>{person/Foaf.givenname}</name>
+      <name>{person/FOAF.givenname}</name>
       <plays>{
         for (stint <- person/performs) yield
         <stint>
-          <in ref={ref(stint/in/asRes)}>{stint/in/Foaf.name}</in>
+          <in ref={ref(stint/in/asRes)}>{stint/in/FOAF.name}</in>
           {instruments(stint)}
         </stint>
       }</plays>

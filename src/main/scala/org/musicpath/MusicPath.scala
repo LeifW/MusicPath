@@ -50,7 +50,7 @@ class MusicPath extends Step {
 
   // Display all the bands in the system.
   get("/bands/?") { template(
-    <bands title="Bands">{ allOf(Mo.MusicGroup) map View.band }</bands>
+    <bands title="Bands">{ allOf(MO.MusicGroup) map View.band }</bands>
   )}
 
   get("/bands/:band") { template(
@@ -59,7 +59,7 @@ class MusicPath extends Step {
 
   // Display all the people in the system.
   get("/people/?") { template(
-    <people title="People">{ allOf(Foaf.Person) map View.person }</people>
+    <people title="People">{ allOf(FOAF.Person) map View.person }</people>
   )}
 
   get("/people/:person") { template(
