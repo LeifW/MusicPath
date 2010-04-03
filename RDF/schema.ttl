@@ -3,7 +3,8 @@
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
-@prefix mo: <http://purl.org/ontology/mo/mit#> .
+@prefix mo: <http://purl.org/ontology/mo/> .
+@prefix myspace: <http://purl.org/ontology/myspace#> .
 @prefix bands: <http://musicpath.org/bands/> .
 @prefix people: <http://musicpath.org/people/> .
 @prefix : <http://musicpath.org/scene#> .
@@ -11,8 +12,13 @@
 <file:///home/leif/Projects/MusicMap/schema.ttl>
     a owl:Ontology .
 
+foaf:Person 
+    :getDBTunePreds foaf:depiction. 
+
 :Band
-    a owl:Class .
+    a owl:Class ;
+    :getDBTunePreds foaf:name, foaf:depiction, myspace:genreTag, 
+                    myspace:locality, foaf:made.
 
 :Stint
     a owl:Class .

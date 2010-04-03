@@ -41,7 +41,7 @@ class MusicPath extends Step {
   get("/load") {
     model.read("http://github.com/LeifW/MusicPath/raw/master/RDF/schema.ttl", "TURTLE")
     model.read("http://github.com/LeifW/MusicPath/raw/master/RDF/sample_data.ttl", "TURTLE")
-    "Stuff Loaded!"
+    <message>Stuff Loaded!</message>
   }
   get("/load/:format/:url") {
     model read(params(":url"), params(":format").toUpperCase)

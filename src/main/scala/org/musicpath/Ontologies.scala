@@ -22,7 +22,7 @@ object FOAF extends Vocabulary("http://xmlns.com/foaf/0.1/") {
   val name = pProp("name")
 }
 
-object MO extends Vocabulary("http://purl.org/ontology/mo/mit#") {
+object MO extends Vocabulary("http://purl.org/ontology/mo/") {
   val MusicGroup = pRes("MusicGroup")
   val Electric_Guitar = pRes("Electric_Guitar")
   val Electric_bass_guitar = pRes("Electric_bass_guitar")
