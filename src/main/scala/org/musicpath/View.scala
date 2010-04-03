@@ -11,7 +11,7 @@ object View {
 
   def ref(thing:Res):String = thing.uri.getPath
 
-  def instruments(stint:Node) = for (instr <- stint/plays) yield <instr>{instr}</instr>
+  def instruments(stint:Node) = for (instr <- stint/plays) yield <instr>{instr/(RDFS^"label")}</instr>
   //def toXml(collection:Node, name:String) = for (thing <- collection) yield Elem(
 
   def band(band:Res) = 
