@@ -20,6 +20,7 @@
     <url-pattern>/stylesheets/*</url-pattern>
     <url-pattern>/css/*</url-pattern>
     <url-pattern>/js/*</url-pattern>
+    <url-pattern>/scene</url-pattern>
   </servlet-mapping>
 
 </web-app>
