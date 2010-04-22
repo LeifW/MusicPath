@@ -3,19 +3,20 @@
 @prefix dbmyspace: <http://dbtune.org/myspace/> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix : <http://musicpath.org/scene#> .
 @prefix bands: <http://musicpath.org/bands/> .
 @prefix people: <http://musicpath.org/people/> .
 
 @base <http://musicpath.org/> .
 
-mo:Electric_Guitar rdfs:label "Guitar".
-mo:Electric_bass_guitar rdfs:label "Bass".
-mo:Drums rdfs:label "Drums".
-mo:Vocals rdfs:label "Vocals".
+mo:Electric_Guitar rdfs:label "Guitar"^^xsd:string .
+mo:Electric_bass_guitar rdfs:label "Bass"^^xsd:string .
+mo:Drums rdfs:label "Drums"^^xsd:string .
+mo:Vocals rdfs:label "Vocals"^^xsd:string .
 
 people:melissa a foaf:Person ;
-    foaf:givenname "Melissa" ;
+    foaf:givenname "Melissa"^^xsd:string ;
     owl:sameAs dbmyspace:vomitheart ; 
     :performs [
         a :Stint ;
@@ -50,15 +51,15 @@ people:melissa a foaf:Person ;
     ] .
 
 bands:ootg a mo:MusicGroup ;
-    foaf:name "Order of the Gash" ;
+    foaf:name "Order of the Gash"^^xsd:string  ;
     owl:sameAs dbmyspace:orderofthegash .
 
 bands:cull a mo:MusicGroup ;
-    foaf:name "Cull" ;
+    foaf:name "Cull"^^xsd:string  ;
     owl:sameAs dbmyspace:cullpdx .
 
 bands:anonremora a mo:MusicGroup ;
-    foaf:name "Anon Remora" ;
+    foaf:name "Anon Remora"^^xsd:string  ;
     owl:sameAs dbmyspace:anonremora .
 
 bands:sei_hexe a mo:MusicGroup ;
@@ -74,20 +75,20 @@ bands:purplerhinestoneeagle a mo:MusicGroup ;
     owl:sameAs dbmyspace:purplerhinestoneeagle .
 
 bands:drats a mo:MusicGroup ;
-    foaf:name "Drats!!!" .
+    foaf:name "Drats!!!"^^xsd:string  .
 
 people:ansel a foaf:Person ;
-    foaf:name "Ansel" ;
+    foaf:name "Ansel"^^xsd:string  ;
     owl:sameAs <http://dbtune.org/myspace/uid/1067107> ;
     :performs [
         a :Stint ;
         :in bands:cull ;
         :plays mo:Drums ;
-        :started "2007"
+        :started 2007
     ] .
 
 people:dylan a foaf:Person ;
-    foaf:givenname "Dylan" ;
+    foaf:givenname "Dylan"^^xsd:string ;
     owl:sameAs dbmyspace:dylanbenedict ;
     :performs [
         a :Stint ;
@@ -103,11 +104,11 @@ people:dylan a foaf:Person ;
     ] .
 
 people:jacqui a foaf:Person ;
-    foaf:givenname "Jacqui" ;
+    foaf:givenname "Jacqui"^^xsd:string ;
     owl:sameAs dbmyspace:beastiebeast .
 
 people:ayla a foaf:Person ;
-    foaf:givenname "Ayla" ;
+    foaf:givenname "Ayla"^^xsd:string ;
     owl:sameAs dbmyspace:veganayla ;
     :performs [
         a :Stint ;
@@ -118,7 +119,7 @@ people:ayla a foaf:Person ;
     ] .
 
 people:chairman a foaf:Person ;
-    foaf:givenname "Chairman" ;
+    foaf:givenname "Chairman"^^xsd:string ;
     :performs [ a :Stint ;
         :in bands:the_chair_project 
     ] ,

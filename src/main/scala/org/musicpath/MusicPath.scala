@@ -1,5 +1,6 @@
 package org.musicpath
 
+import scala.xml.XML
 import scala.xml.{ProcInstr,NodeSeq,Text}
 import com.thinkminimo.step._                  // Web framework
 import net.croz.scardf._                       // Jena wrapper
@@ -10,17 +11,24 @@ import Scene._                                 // Predicates in musicpath ontolo
 
 // This class mostly defines routes.  A couple view helpers are factored out into the "View" object.
 class MusicPath extends Step {
+
+  // Blank string return value for null params
+  override protected def params = super.params withDefaultValue "" 
   
   implicit var model:Model = null
   val url = "http://musicpath.org/"
-  protected def contextPath = request.getContextPath
 
-  override def init {
+  override def init() {
+    //super.init(config)
     val db = TDBFactory.createModel("tdb_store.db")
     model = new Model( ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MICRO_RULE_INF, db) ) withPrefix url
   }
 
   override def destroy = model.close()
+
+  def load {
+    model read "RDF/sample_data.ttl"
+  }
 
   // Helper functions:
 
@@ -37,7 +45,6 @@ class MusicPath extends Step {
     contentType = "application/xml"
   }
 
-  // Load the schema, and the initial sample data.
   get("/load") {
     model.read("http://github.com/LeifW/MusicPath/raw/master/RDF/schema.ttl", "TURTLE")
     model.read("http://github.com/LeifW/MusicPath/raw/master/RDF/sample_data.ttl", "TURTLE")
@@ -53,9 +60,27 @@ class MusicPath extends Step {
     <bands title="Bands">{ allOf(MO.MusicGroup) map View.band }</bands>
   )}
 
-  get("/bands/:band") { template(
+  get("/bands/:band/?") { template(
     View band Res("bands/"+params(":band"))
   )}
+
+  get("/bands/:band/edit") { 
+    Edit band params(":band")
+  }
+
+  post("/bands/:band/?") { 
+    val post = XML.load(request.getInputStream)
+    val band = Res( "bands/"+params(":band") ) a MO.MusicGroup state( FOAF.name -> (post\"name" text))
+    for (member <- post\"members"\"member") {
+      val stint = Anon( by -> Res(member\"@ref" text) )
+      for (instr <- member\"@instrument") 
+        plays(stint) = Res("instruments/"+member\"@instrument")
+      println(Res("instruments/"+member\"@instrument"))
+      position(band) = stint
+    }
+    <result>Okey-doke!</result>
+    redirect("?created=true")
+  }
 
   // Display all the people in the system.
   get("/people/?") { template(
@@ -68,12 +93,13 @@ class MusicPath extends Step {
 
   get("/") {
     template( 
-    <span title="Home" xmlns="http://www.w3.org/1999/xhtml">
+    <div title="Home" xmlns="http://www.w3.org/1999/xhtml">
+      <span id="tagline">"With God on our side, we will map out the bifurcations &amp; aglomerations of this cabal to the heart."</span>
     <h1>Hello!</h1>
-    Please make a selection: {request.getContextPath}
+    Please make a selection: 
     <div><a href="/bands">bands</a></div>
     <div><a href="/people">people</a></div>
-    </span>)
+    </div>)
   }
 
 }
