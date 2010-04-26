@@ -23,7 +23,7 @@
   <xsl:template match="person">
     <li>
       <h4>
-        <a href="{@ref}">
+        <a href="{concat('/people/',@ref)}">
           <xsl:value-of select="name"/>
         </a>
       </h4>
@@ -45,7 +45,7 @@ Plays:<xsl:apply-templates select="plays/stint"/>
   <xsl:template match="band">
     <li>
       <h4>
-        <a href="{@ref}">
+        <a href="{concat('/bands/',@ref)}">
           <xsl:value-of select="name"/>
         </a>
         <xsl:text>: </xsl:text>
@@ -55,7 +55,7 @@ Plays:<xsl:apply-templates select="plays/stint"/>
   </xsl:template>
 
   <xsl:template match="member">
-    <a href="{@ref}">
+    <a href="{concat('/people/',@ref)}">
       <xsl:value-of select="name"/>
     </a>
     <xsl:if test="instr">(<xsl:apply-templates select="instr"/>

@@ -1,0 +1,68 @@
+html \
+   -xmlns=http://www.w3.org/1999/xhtml \
+   -xmlns:foaf=http://xmlns.com/foaf/0.1/ \
+   -xmlns:rdf=http://www.w3.org/1999/02/22-rdf-syntax-ns# \
+   -xmlns:xf=http://www.w3.org/2002/xforms \
+   -xmlns:ev=http://www.w3.org/2001/xml-events \
+   -xmlns:xs=http://www.w3.org/2001/XMLSchema
+  head
+    title <<Bands>> 
+    style -type=text/css
+      <<@namespace xf url("http://www.w3.org/2002/xforms");
+      body {font-family: Ariel, Helvetica, san-serif}
+            /* Input Control labels are right-aligned in a 200px wide column that floats to the left. */
+	     
+	    /* This line ensures all the separate input controls appear on their own lines */
+	    xf|input, xf|select, xf|select1, xf|textarea {display:block; margin:5px 0;}
+	     
+	    /* Makes the labels right aligned in a 200px wide column that floats to the left of the input controls. */
+	    xf|input > xf|label, xf|select > xf|label, xf|select1 > xf|label, xf|textarea > xf|label {text-align:right; padding-right:10px; width:200px; float:left; text-align:right;}
+	     
+	    /* Put a black border and background color around all specified XForms groups and gives them both margin and padding */
+	    xf|group {border: solid black 1px; margin:15px 5px; padding:5px; background-color:Lavender;}
+	    .group-label {text-align:left;font-weight:bold;font-size:12pt;}
+	    /* *:valid  >*/
+	    *:invalid { background-color: red; }
+	    /*xf|input {background-color: red;}
+	    div {background-color: red} */ >>
+    
+    xf:model
+      xf:instance -src=cull.xml
+      xf:instance -id=schema
+        schema -xmlns=<<>>
+          prop1 <<name>>
+          prop2 <<loc>>
+      xf:submission -id=save -method=put -action=foaf.rdf
+      xf:bind -nodeset=members/member/@ref -type=xs:anyURI
+      --xf:bind -nodeset=foaf:Person/foaf:*/@rdf:resource -type=xs:anyURI
+
+  body
+    xf:output -value=name
+    #xf:select1 -ref=foaf:Person/foaf:name
+    #  xf:item
+    #    xf:label <<Sparks>>
+    #    xf:value <<rum>>
+    #  xf:item
+    #    xf:label <<Gooze>>
+    #    xf:value <<norum>>
+
+    #xf:output -value=/rdf:RDF/foaf:Person/foaf:name
+
+   # xf:select1 -ref=foaf:Person/foaf:name
+   #   xf:itemset -nodeset=instance('schema')/*
+   #     xf:item
+   #       xf:label -ref=.
+   #       xf:value -ref=.
+
+    #xf:repeat -nodeset=instance('schema')/*
+      #xf:output -value=.
+
+    xf:repeat -nodeset=members/member
+      xf:input -ref=@ref
+        xf:label
+          xf:output -value='Member' <<: >>
+
+    xf:submit -submission=save
+      xf:label <<Save>>
+      
+   

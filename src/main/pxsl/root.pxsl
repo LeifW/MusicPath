@@ -18,7 +18,7 @@ xsl:stylesheet -version=1.0 -xmlns:xsl=http://www.w3.org/1999/XSL/Transform -xml
   template person
     li
       h4
-        a -href={@ref}
+        a -href={concat('/people/',@ref)}
           value-of name
       <<Plays:>>
       apply-templates plays/stint
@@ -35,13 +35,13 @@ xsl:stylesheet -version=1.0 -xmlns:xsl=http://www.w3.org/1999/XSL/Transform -xml
   template band
     li
       h4
-        a -href={@ref}
+        a -href={concat('/bands/',@ref)}
           value-of name
         text <<: >>
         apply-templates members/member
           
   template member
-    a -href={@ref}
+    a -href={concat('/people/',@ref)}
       value-of name
     if instr
       <<(>>

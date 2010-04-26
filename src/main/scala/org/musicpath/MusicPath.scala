@@ -60,9 +60,15 @@ class MusicPath extends Step {
     <bands title="Bands">{ allOf(MO.MusicGroup) map View.band }</bands>
   )}
 
-  get("/bands/:band/?") { template(
-    View band Res("bands/"+params(":band"))
-  )}
+  get("/bands/:band/?") { 
+    val res = Res("bands/"+params(":band"))
+    template(
+      if (res/RDF.Type isEmpty)
+        Edit band params(":band")
+      else
+        View band res
+    )
+  }
 
   get("/bands/:band/edit") { 
     Edit band params(":band")
@@ -72,7 +78,7 @@ class MusicPath extends Step {
     val post = XML.load(request.getInputStream)
     val band = Res( "bands/"+params(":band") ) a MO.MusicGroup state( FOAF.name -> (post\"name" text))
     for (member <- post\"members"\"member") {
-      val stint = Anon( by -> Res(member\"@ref" text) )
+      val stint = Anon( by -> Res("people/"+ (member\"@ref" text)) )
       for (instr <- member\"@instrument") 
         plays(stint) = Res("instruments/"+member\"@instrument")
       println(Res("instruments/"+member\"@instrument"))

@@ -7,9 +7,10 @@ import net.croz.scardf._
 
 object View {
   
-  implicit def convert(uri:String):URI = new URI(uri)
+  //implicit def convert(uri:String):URI = new URI(uri)
 
-  def ref(thing:Res):String = thing.uri.getPath
+  //def ref(thing:Res):String = thing.uri.getPath
+  def ref(thing:Res):String = thing.jResource.getLocalName
 
   def instruments(stint:Node) = for (instr <- stint/plays) yield <instr>{instr/(RDFS^"label")}</instr>
   //def toXml(collection:Node, name:String) = for (thing <- collection) yield Elem(
