@@ -87,9 +87,11 @@ class MusicPath extends Step {
 
   post("/bands/:band/?") { 
     val post = XML.load(request.getInputStream)
-    val band = Res( "bands/"+params(":band") ) a MO.MusicGroup state( FOAF.name -> (post\"name" text))
+    val band_ref = params(":band")
+    val band = Res( "bands/"+band_ref ) a MO.MusicGroup state( FOAF.name -> (post\"name" text))
     for (member <- post\"members"\"member") {
-      val stint = Anon( by -> Res("people/"+ (member\"@ref" text)) )
+      val member_ref = member\"@ref" text
+      val stint = Res("stints/"+band_ref+"_"+member_ref) state( by -> Res("people/"+member_ref) )
       for (instr <- member\"@instrument") 
         plays(stint) = Res("instruments/"+member\"@instrument")
       println(Res("instruments/"+member\"@instrument"))
