@@ -13,7 +13,7 @@ import Scene._                                 // Predicates in musicpath ontolo
 class MusicPath extends Step {
 
   // Blank string return value for null params
-  override protected def params = super.params withDefaultValue "" 
+//  override protected def params = super.params withDefaultValue "" 
   
   implicit var model:Model = null
   val url = "http://musicpath.org/"
@@ -53,6 +53,11 @@ class MusicPath extends Step {
   get("/load/:format/:url") {
     model read(params(":url"), params(":format").toUpperCase)
     params(":url") ++ " Loaded!"
+  }
+
+  get("/dump") {
+    contentType = "text/plain"
+    model.dumped
   }
 
   // Display all the bands in the system.
