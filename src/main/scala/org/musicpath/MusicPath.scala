@@ -73,7 +73,7 @@ class MusicPath extends Step {
         template( View band res )
   }
 
-  get("/bands/:band.xml") { 
+  get("/bands/:band/xml") { 
     View band Res("bands/"+params(":band"))
   }
 
