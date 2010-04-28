@@ -1,0 +1,10 @@
+PREFIX : <http://musicpath.org/scene#> 
+PREFIX band: <http://musicpath.org/bands/> 
+PREFIX person: <http://musicpath.org/people/> 
+PREFIX foaf: <http://xmlns.com/foaf/0.1/> 
+
+CONSTRUCT {?b1 ?p ?b2} 
+WHERE { ?p :performs [:in ?b1] . 
+        ?p :performs [:in ?b2] .
+FILTER (?b1 != ?b2 && str(?b1) < str(?b2))
+}
