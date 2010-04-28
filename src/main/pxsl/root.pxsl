@@ -29,6 +29,12 @@ xsl:stylesheet -version=1.0 -xmlns:xsl=http://www.w3.org/1999/XSL/Transform -xml
     apply-templates in
 
   template bands
+    form -action=/bands/new 
+      <<New Band >>
+      br
+      label <<URL>>
+      input -type=text -name=ref
+      input -type=submit -method=get
     ul
       apply-templates band
    

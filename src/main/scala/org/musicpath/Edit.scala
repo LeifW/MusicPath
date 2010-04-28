@@ -1,13 +1,16 @@
 package org.musicpath
+import scala.xml.{ProcInstr,Text,NodeSeq}
 
 object Edit {
-    def band(ref:String) =
+    def band(ref:String):NodeSeq =
+ProcInstr("xml-stylesheet", "type='text/xsl' href='/stylesheets/xsltforms/xsltforms.xsl'")++Text("\n")++
+ProcInstr("xsltforms-options", "debug=\"yes\"")++Text("\n")++
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xf="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <head>
     <title>Bands</title>
     <link rel="stylesheet" src="/css/edit.css" type="text/css" />
     <xf:model>
-      <xf:instance src="."/>
+      <xf:instance src="xml"/>
       <xf:submission id="save" method="post" action="."/>
       <!--xf:bind -nodeset=members/member/@ref -type=xs:anyURI -->
     </xf:model>

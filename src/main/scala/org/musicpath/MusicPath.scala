@@ -62,16 +62,22 @@ class MusicPath extends Step {
 
   get("/bands/:band/?") { 
     val res = Res("bands/"+params(":band"))
-    template(
       if (res/RDF.Type isEmpty)
-        Edit band params(":band")
+        redirect(params(":band")+"/edit")
       else
-        View band res
-    )
+        template( View band res )
+  }
+
+  get("/bands/:band.xml") { 
+    View band Res("bands/"+params(":band"))
   }
 
   get("/bands/:band/edit") { 
     Edit band params(":band")
+  }
+
+  get("/bands/new") { 
+    redirect(params("ref")+"/edit")
   }
 
   post("/bands/:band/?") { 
@@ -88,6 +94,8 @@ class MusicPath extends Step {
     redirect("?created=true")
   }
 
+  /* -- People URL's -- */
+
   // Display all the people in the system.
   get("/people/?") { template(
     <people title="People">{ allOf(FOAF.Person) map View.person }</people>
@@ -101,7 +109,7 @@ class MusicPath extends Step {
     template( 
     <div title="Home" xmlns="http://www.w3.org/1999/xhtml">
       <span id="tagline">"With God on our side, we will map out the bifurcations &amp; aglomerations of this cabal to the heart."</span>
-    <h1>Hello!</h1>
+    <h2>Welcome to the Cascadia Bureau of Band Statistics (B.B.S.)</h2>
     Please make a selection: 
     <div><a href="/bands">bands</a></div>
     <div><a href="/people">people</a></div>

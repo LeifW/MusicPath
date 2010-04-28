@@ -37,6 +37,11 @@ Plays:<xsl:apply-templates select="plays/stint"/>
   </xsl:template>
 
   <xsl:template match="bands">
+    <form action="/bands/new">New Band <br/>
+      <label>URL</label>
+      <input type="text" name="ref"/>
+      <input type="submit" method="get"/>
+    </form>
     <ul>
       <xsl:apply-templates select="band"/>
     </ul>
