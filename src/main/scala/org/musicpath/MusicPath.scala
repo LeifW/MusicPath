@@ -57,14 +57,15 @@ class MusicPath extends Step {
   }
 
   get("/graph") {
-    val sw = new StringWriter
-    Util.graph(model).write(sw)
-    sw.toString
+    Util.graph(model) write response.getOutputStream
+    ()
   }
 
   get("/dump") {
     contentType = "text/plain"
-    model.dumped
+    model.write(response.getOutputStream, "TURTLE")
+    ()
+//    model.dumped
   }
 
   // Display all the bands in the system.
