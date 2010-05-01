@@ -1,5 +1,6 @@
 package org.musicpath
 
+import java.io.StringWriter
 import scala.xml.XML
 import scala.xml.{ProcInstr,NodeSeq,Text}
 import com.thinkminimo.step._                  // Web framework
@@ -55,6 +56,12 @@ class MusicPath extends Step {
     params(":url") ++ " Loaded!"
   }
 
+  get("/graph") {
+    val sw = new StringWriter
+    Util.graph(model).write(sw)
+    sw.toString
+  }
+
   get("/dump") {
     contentType = "text/plain"
     model.dumped
@@ -77,7 +84,7 @@ class MusicPath extends Step {
     View band Res("bands/"+params(":band"))
   }
 
-  get("/bands/:band/edit") { 
+  get("/bands/:band/edit/?") { 
     Edit band params(":band")
   }
 

@@ -43,8 +43,12 @@ xsl:stylesheet -version=1.0 -xmlns:xsl=http://www.w3.org/1999/XSL/Transform -xml
       h4
         a -href={concat('/bands/',@ref)}
           value-of name
-        text <<: >>
-        apply-templates members/member
+      text <<: >>
+      apply-templates members/member
+      span
+        << >>
+        a -href={concat('/bands/',@ref,'/edit')}
+          <<edit>>
           
   template member
     a -href={concat('/people/',@ref)}

@@ -53,12 +53,13 @@ Plays:<xsl:apply-templates select="plays/stint"/>
         <a href="{concat('/bands/',@ref)}">
           <xsl:value-of select="name"/>
         </a>
-        <xsl:text>: </xsl:text>
-        <xsl:apply-templates select="members/member"/>
       </h4>
+      <xsl:text>: </xsl:text>
+      <xsl:apply-templates select="members/member"/>
+      <span> <a href="{concat('/bands/',@ref,'/edit')}">edit</a>
+      </span>
     </li>
   </xsl:template>
-
   <xsl:template match="member">
     <a href="{concat('/people/',@ref)}">
       <xsl:value-of select="name"/>
