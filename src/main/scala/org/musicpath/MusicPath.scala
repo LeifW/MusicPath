@@ -61,11 +61,10 @@ class MusicPath extends Step {
     ()
   }
 
-  get("/dump") {
+  get("/dump.ttl") {
     contentType = "text/plain"
     model.write(response.getOutputStream, "TURTLE")
     ()
-//    model.dumped
   }
 
   // Display all the bands in the system.
@@ -100,9 +99,9 @@ class MusicPath extends Step {
     for (member <- post\"members"\"member") {
       val member_ref = member\"@ref" text
       val stint = Res("stints/"+band_ref+"_"+member_ref) state( by -> Res("people/"+member_ref) )
-      for (instr <- member\"@instrument") 
-        plays(stint) = Res("instruments/"+member\"@instrument")
-      println(Res("instruments/"+member\"@instrument"))
+      for (instr <- member\"instr") 
+        plays(stint) = Res("instruments/"+(member\"instr" text))
+      println(Res("instruments/"+member\"instr"))
       position(band) = stint
     }
     <result>Okey-doke!</result>

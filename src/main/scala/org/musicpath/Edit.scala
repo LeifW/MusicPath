@@ -30,14 +30,22 @@ ProcInstr("xsltforms-options", "debug=\"yes\"")++Text("\n")++
             <input ref="@ref">
               <label>Name</label>
             </input>
-            <select1 ref="@instrument">              <label>Instrument</label>
+            <select1 ref="instr/@ref">              <label>Instrument</label>
               <item>
                 <label>Guitar</label>
-                <value>guitar</value>
+                <value>Electric_Guitar</value>
+              </item>
+              <item>
+                <label>Bass</label>
+                <value>Electric_bass_guitar</value>
+              </item>
+              <item>
+                <label>Voice</label>
+                <value>Voice</value>
               </item>
               <item>
                 <label>Drums</label>
-                <value>drums</value>
+                <value>Drums</value>
               </item>
             </select1>
             <trigger>

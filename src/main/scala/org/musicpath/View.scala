@@ -12,7 +12,7 @@ object View {
   //def ref(thing:Res):String = thing.uri.getPath
   def ref(thing:Res):String = thing.jResource.getLocalName
 
-  def instruments(stint:Node) = for (instr <- stint/plays) yield <instr>{instr/(RDFS^"label")}</instr>
+  def instruments(stint:Node) = for (instr <- stint/plays) yield <instr ref={ref(instr asRes)}>{instr/(RDFS^"label")}</instr>
   //def toXml(collection:Node, name:String) = for (thing <- collection) yield Elem(
 
   def band(band:Res) = 
@@ -22,8 +22,8 @@ object View {
             for (stint <- band/position) yield
               <member ref={ref(stint/by/asRes)}>
                 <name>{stint/by/FOAF.givenname}</name>
-              {instruments(stint)
-              }</member>
+              {instruments(stint)}
+              </member>
           }</members>
         </band>
 
