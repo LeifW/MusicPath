@@ -84,7 +84,7 @@ class MusicPath extends Step {
   }
 
   get("/bands/:band/edit/?") { 
-    Edit band params(":band")
+    Edit band
   }
 
   get("/bands/new") { 
@@ -97,7 +97,7 @@ class MusicPath extends Step {
     val band = Res( "bands/"+band_ref ) a MO.MusicGroup state( FOAF.name -> (post\"name" text))
     for (member <- post\"members"\"member") {
       val member_ref = member\"@ref" text
-      val stint = Res("stints/"+band_ref+"_"+member_ref) state( by -> Res("people/"+member_ref) )
+      val stint = Res("stints/"+band_ref+"_"+member_ref) a Stint state( by -> Res("people/"+member_ref) )
       for (instr <- member\"instr") 
         plays(stint) = Res("instruments/"+(member\"instr" text))
       println(Res("instruments/"+member\"instr"))
@@ -117,6 +117,34 @@ class MusicPath extends Step {
   get("/people/:person") { template(
     View person Res("people/"+params(":person"))
   )}
+
+  get("/people/:person/xml") { 
+    View person Res("people/"+params(":person"))
+  }
+
+  get("/people/:person/edit/?") { 
+    Edit person
+  }
+
+  get("/people/new") { 
+    redirect(params("ref")+"/edit")
+  }
+
+  post("/people/:person/?") { 
+    val post = XML.load(request.getInputStream)
+    val member_ref = params(":person")
+    val person = Res( "people/"+member_ref ) a FOAF.Person state( FOAF.givenname -> (post\"name" text))
+    for (stint <- post\"plays"\"stint") {
+      val band_ref = stint\"in"\"@ref" text
+      val membership = Res("stints/"+band_ref+"_"+member_ref) a Stint state( by -> Res("people/"+member_ref) )
+      for (instr <- stint\"instr") 
+        plays(membership) = Res("instruments/"+instr.text)
+      plays(person) = membership
+    }
+    <result>Okey-doke!</result>
+    redirect("?created=true")
+  }
+
 
   get("/") {
     template( 
