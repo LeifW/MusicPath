@@ -28,9 +28,9 @@
         </a>
       </h4>
 Plays:<xsl:apply-templates select="plays/stint"/>
+      <a href="{concat('/people/',@ref,'/edit')}">edit</a>
     </li>
   </xsl:template>
-
   <xsl:template match="stint">
     <xsl:value-of select="instrument"/>
  in <xsl:apply-templates select="in"/>
