@@ -99,8 +99,8 @@ class MusicPath extends Step {
       val member_ref = member\"@ref" text
       val stint = Res("stints/"+band_ref+"_"+member_ref) a Stint state( by -> Res("people/"+member_ref) )
       for (instr <- member\"instr") 
-        plays(stint) = Res("instruments/"+(member\"instr" text))
-      println(Res("instruments/"+member\"instr"))
+        plays(stint) = Res("instruments/"+(member\"instr"\"@ref" text))
+      println(Res("instruments/"+member\"instr"\"@ref"))
       position(band) = stint
     }
     <result>Okey-doke!</result>

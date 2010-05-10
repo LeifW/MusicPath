@@ -14,7 +14,7 @@ ProcInstr("xsltforms-options", "debug=\"no\"")++Text("\n")++
       <xf:instance id="member">  <!-- Blank new Person -->
         <member ref="" xmlns={""}>
           <name/>
-          <instr/>
+          <instr ref=""/>
         </member>
       </xf:instance>
       <xf:submission id="save" method="post" action="."/>
