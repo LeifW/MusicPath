@@ -1,5 +1,7 @@
 MusicPath
 
+Aims to be a linked data wiki of the community music scene.  Made out of Scala, Step, Scardf, Jena, RDF, OWL, and SPARQL-y things on the graph db (triple store) TDB.
+
 Brainstorming wiki (Research leading up to this.  Ideas, related projects, background, etc)
 http://wiki.pdxhub.org/pdx_music_map/
 
