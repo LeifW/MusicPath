@@ -8,6 +8,7 @@ xsl:stylesheet -version=1.0 -xmlns:xsl=http://www.w3.org/1999/XSL/Transform -xml
       head
         title <<MusicPath: >>
           value-of */@title
+        link -rel=alternate -type=application/x-wiki -title=<<Edit this page>> -href={concat('/',name(*),'/',*/@ref,'/edit')}
       body
         apply-templates
 

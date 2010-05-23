@@ -10,6 +10,8 @@ class MusicProject(info: ProjectInfo) extends DefaultWebProject(info)
   val jettytester = "org.mortbay.jetty" % "jetty-servlet-tester" % "6.1.22" % "test"
 
   val scalatest = "org.scalatest" % "scalatest" % "1.0" % "test"
+  val knockoff = "com.tristanhunt" %% "knockoff" % "0.7.0-10"
+  val t_repo = "t_repo" at "http://tristanhunt.com:8081/content/groups/public/"
 }
 
 // vim: set ts=2 sw=2 et:
