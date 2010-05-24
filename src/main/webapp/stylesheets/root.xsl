@@ -7,6 +7,7 @@
       <head>
         <title>MusicPath: <xsl:value-of select="*/@title"/>
         </title>
+        <link rel="alternate" type="application/x-wiki" title="Edit this page" href="{concat('/',name(*),'/',*/@ref,'/edit')}"/>
       </head>
       <body>
         <xsl:apply-templates/>
