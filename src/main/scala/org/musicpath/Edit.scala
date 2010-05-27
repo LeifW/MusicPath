@@ -9,6 +9,14 @@ ProcInstr("xsltforms-options", "debug=\"no\"")++Text("\n")++
   <head>
     <title>{title}</title>
     <link rel="stylesheet" src="/css/edit.css" type="text/css" />
+    <!--style>
+      @namespace xf url("http://www.w3.org/2002/xforms");
+      body {{font-family: Ariel, Helvetica, san-serif}}
+      /* Put a black border and background color around all specified XForms groups and gives them both margin and padding */
+      xf|group {{border: solid black 1px; margin:15px 5px; padding:5px; background-color:Lavender;}}
+      .group-label {{text-align:left;font-weight:bold;font-size:12pt;}}
+      *:invalid {{ background-color: red; }}
+    </style-->
     <xf:model>  
       <xf:instance id="default" src="xml"/>
       <xf:instance id="member">  <!-- Blank new Person -->
