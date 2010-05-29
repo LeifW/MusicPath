@@ -26,7 +26,56 @@ class MusicPath extends Step {
           {instruments(stint)}
         </stint>
       }</plays>
-    </person>)
+    </person>,
+    Edit.root("Editing Person",
+    <group xmlns="http://www.w3.org/2002/xforms">
+      <output value="name"/>
+
+      <input ref="name">
+        <label>Name</label>
+      </input>
+      <group>
+        <label>Bands</label>
+        <repeat nodeset="plays/stint" appearance="compact" id="repeat">
+          <group>
+            <input ref="in/@ref">
+              <label>Name</label>
+            </input>
+            <select1 ref="instr/@ref">              <label>Instrument</label>
+              <item>
+                <label>Guitar</label>
+                <value>Electric_Guitar</value>
+              </item>
+              <item>
+                <label>Bass</label>
+                <value>Electric_bass_guitar</value>
+              </item>
+              <item>
+                <label>Voice</label>
+                <value>Voice</value>
+              </item>
+              <item>
+                <label>Drums</label>
+                <value>Drums</value>
+              </item>
+            </select1>
+            <trigger>
+              <label>X</label>
+              <delete nodeset="." at="1" ev:event="DOMActivate"/>
+            </trigger>
+          </group>
+        </repeat>
+        <trigger>
+          <label>New</label>
+          <insert nodeset="plays/stint" at="index('repeat')" context="plays" position="after" ev:event="DOMActivate"/>
+        </trigger>
+      </group>
+
+      <submit submission="save">
+        <label>Save</label>
+      </submit>
+    </group>)
+  )
 
   val bands = new Resource("band", MO.MusicGroup, band=> 
     <band ref={ref(band)}>
@@ -38,34 +87,94 @@ class MusicPath extends Step {
             {instruments(stint)}
           </member>
       }</members>
-    </band>)
+    </band>,
+    Edit.root("Editing Band",
+    <group nodeset="instance('default')" xmlns="http://www.w3.org/2002/xforms">
+      <output value="name"/>
 
-  //val resources = List(people, bands)
+      <input ref="name">
+        <label>Name</label>
+      </input>
+      <group>
+        <label>Members</label>
+        <repeat nodeset="members/member" appearance="compact" id="repeat">
+          <group>
+            <input ref="@ref">
+              <label>Name</label>
+            </input>
+            <select1 ref="instr/@ref">              <label>Instrument</label>
+              <item>
+                <label>Guitar</label>
+                <value>Electric_Guitar</value>
+              </item>
+              <item>
+                <label>Bass</label>
+                <value>Electric_bass_guitar</value>
+              </item>
+              <item>
+                <label>Voice</label>
+                <value>Voice</value>
+              </item>
+              <item>
+                <label>Drums</label>
+                <value>Drums</value>
+              </item>
+            </select1>
+            <trigger>
+              <label>X</label>
+              <delete nodeset="." at="1" ev:event="DOMActivate"/>
+            </trigger>
+          </group>
+        </repeat>
+        <trigger>
+          <label>New</label>
+          <insert origin="instance('member')" nodeset="members/member" context="members" position="after" ev:event="DOMActivate"/>
+        </trigger>
+      </group>
 
-  for (res <- List(people)) {
-    get("/"+res.plural+"/?")(<root title={res.plural}>{allOf(res.rdfType) map res.view}</root>)
-    get("/"+res.plural+"/:id")(res view Res(res.plural+"/"+params(":id")))
-  }
+      <submit submission="save">
+        <label>Save</label>
+      </submit>
+    </group>)
+  )
 
+  for (res <- List(people, bands)) {
 
+    val subDir = "/"+res.plural  // Just to save me from having to type that over and over.
 
-  // Blank string return value for null params
-//  override protected def params = super.params withDefaultValue "" 
+    // GET /resourcetype
+    // Display all of that resource type in the system, e.g. GET /people returns all FOAF.Person's.
+    get(subDir+"/?") { template( <root title={res.plural}>{allOf(res.rdfType) map res.view}</root> ) }
+    
+    // GET /resourcetype/id
+    // Display a singular record retrieved by id, e.g. GET /people/melissa returns the resource with id $HOSTNAME/people/melissa.
+    // If the resource doesn't have a type, it's assumed to be a new resource, and redirects to the edit form.
+    get(subDir+"/:id") {
+      val req = Res(res.plural+"/"+params(":id"))
+      if (req/RDF.Type isEmpty)
+        redirect(params(":id")+"/edit")
+      else
+        template( res view req ) 
+    }
+
+    // GET /resourcetype/id/xml
+    // This is just a straightforward view of the resource sans checks for the "edit new resource" to use.
+    get(subDir+"/:id/xml") { res view Res(res.plural+"/"+params(":id")) }
+
+    // GET /resourcetype/id/edit
+    get(subDir+"/:id/edit/?") { res edit }  // Yes, fire up an ole' Macintosh image!
   
-  implicit var model:Model = null
-  val url = "http://musicpath.org/"
+    // GET /resourcetype/new
+    get(subDir+"/new") { redirect(params("ref")+"/edit") }
 
-  override def init() {
-    //super.init(config)
-    val db = TDBFactory.createModel("tdb_store.db")
-    model = new Model( ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MICRO_RULE_INF, db) ) withPrefix url
   }
+
+  
+  val url = "http://musicpath.org/"
+  val db = TDBFactory.createModel("tdb_store.db")
+  implicit val model:Model = new Model( ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MICRO_RULE_INF, db) ) withPrefix url
 
   override def destroy = model.close()
-
-  def load {
-    model read "RDF/sample_data.ttl"
-  }
 
   // Helper functions:
 
@@ -75,7 +184,6 @@ class MusicPath extends Step {
                                           content
 
   // Select all things of a given RDF:type.
-  //def allOf(category:Res) = Sparql selectAllX asRes where( (X, RDF.Type, category) ) from model
   def allOf(category:Res) = model.listRes(RDF.Type, category)
   
   before {
@@ -86,6 +194,7 @@ class MusicPath extends Step {
     model.read("http://musicpath.org/dump.ttl", "TURTLE")
     <message>Stuff Loaded!</message>
   }
+
   get("/load/:format/:url") {
     model read(params(":url"), params(":format").toUpperCase)
     params(":url") ++ " Loaded!"
@@ -102,31 +211,6 @@ class MusicPath extends Step {
     ()
   }
 
-  // Display all the bands in the system.
-  get("/bands/?") { template(
-    <bands title="Bands">{ allOf(MO.MusicGroup) map View.band }</bands>
-  )}
-
-  get("/bands/:band/?") { 
-    val res = Res("bands/"+params(":band"))
-      if (res/RDF.Type isEmpty)
-        redirect(params(":band")+"/edit")
-      else
-        template( View band res )
-  }
-
-  get("/bands/:band/xml") { 
-    View band Res("bands/"+params(":band"))
-  }
-
-  get("/bands/:band/edit/?") { 
-    Edit band
-  }
-
-  get("/bands/new") { 
-    redirect(params("ref")+"/edit")
-  }
-
   post("/bands/:band/?") { 
     val post = XML.load(request.getInputStream)
     val band_ref = params(":band")
@@ -141,30 +225,6 @@ class MusicPath extends Step {
     }
     <result>Okey-doke!</result>
     redirect("?created=true")
-  }
-
-  /* -- People URL's -- */
-
-  // Display all the people in the system.
- /* get("/people/?") { template(
-    <people title="People">{ allOf(FOAF.Person) map View.person }</people>
-  )}
-
-  get("/people/:person") { template(
-    View person Res("people/"+params(":person"))
-  )}
-  */
-
-  get("/people/:person/xml") { 
-    View person Res("people/"+params(":person"))
-  }
-
-  get("/people/:person/edit/?") { 
-    Edit person
-  }
-
-  get("/people/new") { 
-    redirect(params("ref")+"/edit")
   }
 
   post("/people/:person/?") { 
