@@ -13,6 +13,42 @@ import Scene._                                 // Predicates in musicpath ontolo
 // This class mostly defines routes.  A couple view helpers are factored out into the "View" object.
 class MusicPath extends Step {
 
+  def ref(thing:Res):String = thing.jResource.getLocalName
+  def instruments(stint:Node) = for (instr <- stint/plays) yield <instr ref={ref(instr asRes)}>{instr/(RDFS^"label")}</instr>
+
+  val people = new Resource("person", "people", FOAF.Person, person=>
+    <person ref={ref(person)}>
+      <name>{person/FOAF.givenname}</name>
+      <plays>{
+        for (stint <- person/performs) yield
+        <stint>
+          <in ref={ref(stint/in/asRes)}>{stint/in/FOAF.name}</in>
+          {instruments(stint)}
+        </stint>
+      }</plays>
+    </person>)
+
+  val bands = new Resource("band", MO.MusicGroup, band=> 
+    <band ref={ref(band)}>
+      <name>{band/FOAF.name}</name>
+      <members>{
+        for (stint <- band/position) yield
+          <member ref={ref(stint/by/asRes)}>
+            <name>{stint/by/FOAF.givenname}</name>
+            {instruments(stint)}
+          </member>
+      }</members>
+    </band>)
+
+  //val resources = List(people, bands)
+
+  for (res <- List(people)) {
+    get("/"+res.plural+"/?")(<root title={res.plural}>{allOf(res.rdfType) map res.view}</root>)
+    get("/"+res.plural+"/:id")(res view Res(res.plural+"/"+params(":id")))
+  }
+
+
+
   // Blank string return value for null params
 //  override protected def params = super.params withDefaultValue "" 
   
@@ -110,13 +146,14 @@ class MusicPath extends Step {
   /* -- People URL's -- */
 
   // Display all the people in the system.
-  get("/people/?") { template(
+ /* get("/people/?") { template(
     <people title="People">{ allOf(FOAF.Person) map View.person }</people>
   )}
 
   get("/people/:person") { template(
     View person Res("people/"+params(":person"))
   )}
+  */
 
   get("/people/:person/xml") { 
     View person Res("people/"+params(":person"))
