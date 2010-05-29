@@ -138,9 +138,10 @@ class MusicPath extends Step {
     </group>)
   )
 
+  // This loop adds all the standard REST CRUD Urls to each resource in the list.
   for (res <- List(people, bands)) {
 
-    val subDir = "/"+res.plural  // Just to save me from having to type that over and over.
+    val subDir = "/"+res.plural  // Just to save repetetive typing.
 
     // GET /resourcetype
     // Display all of that resource type in the system, e.g. GET /people returns all FOAF.Person's.
@@ -149,7 +150,7 @@ class MusicPath extends Step {
     // GET /resourcetype/id
     // Display a singular record retrieved by id, e.g. GET /people/melissa returns the resource with id $HOSTNAME/people/melissa.
     // If the resource doesn't have a type, it's assumed to be a new resource, and redirects to the edit form.
-    get(subDir+"/:id") {
+    get(subDir+"/:id/?") {
       val req = Res(res.plural+"/"+params(":id"))
       if (req/RDF.Type isEmpty)
         redirect(params(":id")+"/edit")
