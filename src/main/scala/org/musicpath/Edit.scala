@@ -1,8 +1,9 @@
 package org.musicpath
-import scala.xml.{ProcInstr,Text,NodeSeq}
+import scala.xml.{ProcInstr,Text,NodeSeq, Node}
+
 
 object Edit {
-    def root(title:String, content:NodeSeq):NodeSeq =
+    def root(title:String, content:Node):NodeSeq =
 ProcInstr("xml-stylesheet", "type='text/xsl' href='/stylesheets/xsltforms/xsltforms.xsl'")++Text("\n")++
 ProcInstr("xsltforms-options", "debug=\"no\"")++Text("\n")++
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xf="http://www.w3.org/2002/xforms" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xs="http://www.w3.org/2001/XMLSchema">
