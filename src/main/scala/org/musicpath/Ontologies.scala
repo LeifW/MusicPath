@@ -1,5 +1,5 @@
 package org.musicpath
-import net.croz.scardf.Vocabulary
+import net.croz.scardf.{Vocabulary, XSD}
 import com.hp.hpl.jena.vocabulary.{OWL => jOWL}
 import com.hp.hpl.jena.sparql.vocabulary.{FOAF => jFOAF}
 
@@ -14,6 +14,8 @@ object Scene extends Vocabulary("http://musicpath.org/scene#") {
   val performs = pProp("performs")
   val plays = pProp("plays")
   val started = pProp("started")
+
+  val description = pProp("description") withRange XSD.string
 }
 
 object FOAF extends Vocabulary( jFOAF.getURI ) {

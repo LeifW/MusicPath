@@ -6,6 +6,7 @@ import scala.xml.{ProcInstr,NodeSeq,Text}
 import com.thinkminimo.step._                  // Web framework
 import net.croz.scardf._                       // Jena wrapper
 import com.hp.hpl.jena.rdf.model.ModelFactory  // Inferencing
+import com.hp.hpl.jena.rdf.model.ResourceFactory  // 
 import com.hp.hpl.jena.ontology.OntModelSpec   // Inferencing
 import com.hp.hpl.jena.tdb.TDBFactory          // DB Store
 import Scene._                                 // Predicates in musicpath ontology
@@ -243,11 +244,31 @@ class MusicPath extends Step {
     redirect("?created=true")
   }
 
+  // POST home: Res("").jResource.getProperty(description).changeObject(ResourceFactory.createTypedLiteral("yes"))
+  // Res("").jResource getProperty description changeObject ResourceFactory.createTypedLiteral("yes")
+  post("/") {
+    Res("").jResource.getProperty(description).changeObject(ResourceFactory.createTypedLiteral(params("content")))
+  }
+
+  get("/content/?") {
+    Res("")/description
+  }
+
+  get("/edit/?") {
+    template(
+   <form action="/" method="post" xmlns="http://www.w3.org/1999/xhtml">
+      <label>Home page content</label>
+      <input type="text" name="content"/>
+      <input type="submit" method="post"/>
+    </form>
+   )}
+
 
   get("/") {
     template( 
     <div title="Home" xmlns="http://www.w3.org/1999/xhtml">
-      <span id="tagline">"With God on our side, we will map out the bifurcations &amp; aglomerations of this cabal to the heart."</span>
+      <span id="tagline">"With God on our side, we will map out the bifurcations &amp; agglomerations of this cabal to the heart."</span>
+      <a href="/edit">edit</a>
     <h2>Welcome to the Cascadia Bureau of Band Statistics (B.B.S.)</h2>
     Please make a selection: 
     <div><a href="/bands">bands</a></div>
