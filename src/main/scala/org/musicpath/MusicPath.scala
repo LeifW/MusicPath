@@ -10,6 +10,7 @@ import com.hp.hpl.jena.rdf.model.ResourceFactory  //
 import com.hp.hpl.jena.ontology.OntModelSpec   // Inferencing
 import com.hp.hpl.jena.tdb.TDBFactory          // DB Store
 import Scene._                                 // Predicates in musicpath ontology
+//import com.tristanhunt._
 
 // This class mostly defines routes.  A couple view helpers are factored out into the "View" object.
 class MusicPath extends Step {
@@ -173,10 +174,13 @@ class MusicPath extends Step {
 
   
   val url = "http://musicpath.org/"
-  val db = TDBFactory.createModel("tdb_store.db")
-  implicit val model:Model = new Model( ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MICRO_RULE_INF, db) ) withPrefix url
+  //val db = TDBFactory.createModel("tdb_store.db")
+  implicit val model:Model = new Model( ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MICRO_RULE_INF) ) withPrefix url
+  model.read("file://dump.ttl", "TURTLE")
 
-  override def destroy = model.close()
+  override def destroy {
+    model.close()
+  }
 
   // Helper functions:
 
@@ -251,7 +255,11 @@ class MusicPath extends Step {
   }
 
   get("/content/?") {
-    Res("")/description
+    template( 
+      <div title="Home" xmlns="http://www.w3.org/1999/xhtml">
+        {Res("")/description}
+      </div>
+    )
   }
 
   get("/edit/?") {
