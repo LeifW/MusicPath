@@ -147,7 +147,9 @@ class MusicPath extends Step {
 
     // GET /resourcetype
     // Display all of that resource type in the system, e.g. GET /people returns all FOAF.Person's.
-    get(subDir+"/?") { template( <root title={res.plural}>{allOf(res.rdfType) map res.view}</root> ) }
+    get(subDir+"/?") { 
+      template( <root title={res.plural}>{allOf(res.rdfType) map res.view}</root> ) 
+    }
     
     // GET /resourcetype/id
     // Display a singular record retrieved by id, e.g. GET /people/melissa returns the resource with id $HOSTNAME/people/melissa.
@@ -162,13 +164,19 @@ class MusicPath extends Step {
 
     // GET /resourcetype/id/xml
     // This is just a straightforward view of the resource sans checks for the "edit new resource" to use.
-    get(subDir+"/:id/xml") { res view Res(res.plural+"/"+params(":id")) }
+    get(subDir+"/:id/xml") { 
+      res view Res(res.plural+"/"+params(":id")) 
+    }
 
     // GET /resourcetype/id/edit
-    get(subDir+"/:id/edit/?") { res edit }  // Yes, fire up an ole' Macintosh image!
+    get(subDir+"/:id/edit/?") { 
+      res edit                   // Yes, fire up an ole' Macintosh image!
+    }  
   
     // GET /resourcetype/new
-    get(subDir+"/new") { redirect(params("ref")+"/edit") }
+    get(subDir+"/new") { 
+      redirect(params("ref")+"/edit") 
+    }
 
   }
 
@@ -176,7 +184,7 @@ class MusicPath extends Step {
   val url = "http://musicpath.org/"
   //val db = TDBFactory.createModel("tdb_store.db")
   implicit val model:Model = new Model( ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MICRO_RULE_INF) ) withPrefix url
-  model.read("file://dump.ttl", "TURTLE")
+  model.read("file:///home/leif/musicpath/dump.ttl", "TURTLE")
 
   override def destroy {
     model.close()
