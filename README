@@ -15,3 +15,24 @@ Dependencies:
 
  Scardf (DSL wrapper for Jena)
  http://code.google.com/p/scardf
+
+To get started:
+* Install SBT if you don't have it already (see http://code.google.com/p/simple-build-tool/wiki/Setup ; essentially it just says to make a script to save typing "java -jar sbt.jar" all the time.)
+git clone http://github.com/alandipert/step.git
+git clone http://github.com/LeifW/scardf.git
+git clone http://github.com/LeifW/MusicPath.git
+
+cd step
+sbt publish-local (this will compile and put step as a library in your .ivy2 directory, to be automatically pulled in as a dependency of musicpath)
+
+Repeat the above with scardf.
+
+cd MusicPath
+sbt
+update (to pull in the listed dependencies)
+jetty-run
+Ta-da!
+It should compile and fire up a web server on port 8080.
+Run "test" in sbt to run some tests.
+The main source starts in src/main/scala/org/musicpath/MusicPath.scala
+When you start hacking, running something like ~compile, ~test, or ~prepare-webapp are useful commands in sbt - any time a file is saved, they'll recompile, test, or restart the running webapp.
