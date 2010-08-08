@@ -5,10 +5,7 @@ import scala.xml.XML
 import scala.xml.{ProcInstr,NodeSeq,Text}
 import com.thinkminimo.step._                  // Web framework
 import net.croz.scardf._                       // Jena wrapper
-import com.hp.hpl.jena.rdf.model.ModelFactory  // Inferencing
 import com.hp.hpl.jena.rdf.model.ResourceFactory  // 
-import com.hp.hpl.jena.ontology.OntModelSpec   // Inferencing
-import com.hp.hpl.jena.tdb.TDBFactory          // DB Store
 import Scene._                                 // Predicates in musicpath ontology
 //import com.tristanhunt._
 
@@ -143,7 +140,7 @@ class MusicPath extends Step {
   // This loop adds all the standard REST CRUD Urls to each resource in the list.
   for (res <- List(people, bands)) {
 
-    val subDir = "/"+res.plural  // Just to save repetetive typing.
+    val subDir = "/"+res.plural  // Just to save repetitive typing.
 
     // GET /resourcetype
     // Display all of that resource type in the system, e.g. GET /people returns all FOAF.Person's.
@@ -183,8 +180,9 @@ class MusicPath extends Step {
   
   val url = "http://musicpath.org/"
   //val db = TDBFactory.createModel("tdb_store.db")
-  implicit val model:Model = new Model( ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MICRO_RULE_INF) ) withPrefix url
-  model.read("file:///home/leif/musicpath/dump.ttl", "TURTLE")
+  //implicit val model:Model = new Model( ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MICRO_RULE_INF, db) ) withPrefix url
+  implicit val model = Model withPrefix url
+  //model.read("file:///home/leif/musicpath/dump.ttl", "TURTLE")
 
   override def destroy {
     model.close()
@@ -214,7 +212,7 @@ class MusicPath extends Step {
     params(":url") ++ " Loaded!"
   }
 
-  get("/graph") {
+  get("/graph.rdf") {
     Util.graph(model) write response.getOutputStream
     ()
   }
@@ -282,14 +280,8 @@ class MusicPath extends Step {
 
   get("/") {
     template( 
-    <div title="Home" xmlns="http://www.w3.org/1999/xhtml">
-      <span id="tagline">"With God on our side, we will map out the bifurcations &amp; agglomerations of this cabal to the heart."</span>
-      <a href="/edit">edit</a>
-    <h2>Welcome to the Cascadia Bureau of Band Statistics (B.B.S.)</h2>
-    Please make a selection: 
-    <div><a href="/bands">bands</a></div>
-    <div><a href="/people">people</a></div>
-    </div>)
+      <home title="Home"/>
+    )
   }
 
 }

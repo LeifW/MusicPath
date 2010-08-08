@@ -69,6 +69,23 @@ Plays:<xsl:apply-templates select="plays/stint"/>
 )</xsl:if>
     <xsl:if test="position()!=last()">, </xsl:if>
   </xsl:template>
+  <xsl:template match="home">
+    <div>
+      <div>
+        <a href="http://github.com/LeifW/MusicPath">Source</a>
+ | <a href="http://wiki.pdxhub.org/pdx_music_map/">Brainstorming Wiki</a>
+      </div>
+      <span id="tagline">"With God on our side, we will map out the bifurcations &amp; agglomerations of this cabal to the heart."</span>
+      <a href="/edit">edit</a>
+      <h2>Welcome to the Cascadia Bureau of Band Statistics (B.B.S.)</h2>
+Please make a selection:<div>
+        <a href="/bands">bands</a>
+      </div>
+      <div>
+        <a href="/people">people</a>
+      </div>
+    </div>
+  </xsl:template>
   <xsl:template match="@*|xhtml:*">                       <!-- Copy XHTML through unscathed -->
     <xsl:copy>
       <xsl:apply-templates select="@*|node()"/>
