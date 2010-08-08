@@ -10,7 +10,7 @@ class MusicPathTest extends StepSuite with ShouldMatchers {
   test("GET / should return index") {
     get("/") {
       status should equal (200)
-      body should include ("select")
+      body should include ("Home")
     }
   }
   test("GET /bands should have something about Anon Remora having Ayla on guitar") {

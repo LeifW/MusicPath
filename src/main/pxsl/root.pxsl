@@ -62,6 +62,21 @@ xsl:stylesheet -version=1.0 -xmlns:xsl=http://www.w3.org/1999/XSL/Transform -xml
     if position()!=last()
       <<, >>
 
+  template home
+    div 
+      div
+        a -href=http://github.com/LeifW/MusicPath  <<Source>>
+        << | >>
+        a -href=http://wiki.pdxhub.org/pdx_music_map/  <<Brainstorming Wiki>>
+      span -id=tagline <<"With God on our side, we will map out the bifurcations &amp; agglomerations of this cabal to the heart.">>
+      a -href=/edit <<edit>>
+      h2 <<Welcome to the Cascadia Bureau of Band Statistics (B.B.S.)>>
+      <<Please make a selection:>> 
+      div 
+        a -href=/bands <<bands>>
+      div 
+        a -href=/people <<people>>
+
   template @*|xhtml:*  -- Copy XHTML through unscathed
     copy
       apply-templates @*|node()
