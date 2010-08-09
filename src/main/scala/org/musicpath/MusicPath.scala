@@ -1,6 +1,6 @@
 package org.musicpath
 
-import java.io.StringWriter
+import java.io.{File, FileWriter, StringWriter}
 import scala.xml.XML
 import scala.xml.{ProcInstr,NodeSeq,Text}
 import com.thinkminimo.step._                  // Web framework
@@ -197,7 +197,7 @@ class MusicPath extends Step {
 
   // Select all things of a given RDF:type.
   def allOf(category:Res) = model.listRes(RDF.Type, category)
-  
+ 
   before {
     contentType = "application/xml"
   }
@@ -283,5 +283,30 @@ class MusicPath extends Step {
       <home title="Home"/>
     )
   }
+
+  get("/template/bands/:band/?") {
+    XQueryCall run new File("bands/" + params(":band"))
+  }
+
+  get("/template/people/:person/?") {
+    XQueryCall run new File("people/" + params(":person"))
+  }
+
+  get("/template/people/:person/edit/?") {
+    template(
+   <form action="." method="post" xmlns="http://www.w3.org/1999/xhtml">
+      <label>Edit some XSPARQL</label>
+      <textarea rows="40" cols="80" name="content">{ io.Source.fromFile("people/"+params(":person")).mkString }</textarea>
+      <input type="submit" method="post"/>
+    </form>
+   )}
+
+  post("/template/people/:person/?") {
+    val out = new FileWriter("people/" + params(":person"))
+    out.write( params("content") )
+    out.close()
+    template(<p xmlns="http://www.w3.org/1999/xhtml">Yeah, you saved it</p>)
+  }
+
 
 }
