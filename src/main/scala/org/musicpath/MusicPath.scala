@@ -1,6 +1,8 @@
 package org.musicpath
 
-import java.io.{File, FileWriter, StringWriter}
+import java.io.{File, FileWriter, FileOutputStream, StringWriter}
+import org.apache.commons.io.IOUtils
+import scala.io.Source
 import scala.xml.XML
 import scala.xml.{ProcInstr,NodeSeq,Text}
 import com.thinkminimo.step._                  // Web framework
@@ -284,29 +286,34 @@ class MusicPath extends Step {
     )
   }
 
-  get("/template/bands/:band/?") {
-    XQueryCall run new File("bands/" + params(":band"))
+  // XSPARQL templating:
+  for (resource <- List("people", "bands")) {
+
+  get("/template/"+resource+"/:id/?") {
+    XQueryCall run new File(resource, params(":id")+".xquery")
   }
 
-  get("/template/people/:person/?") {
-    XQueryCall run new File("people/" + params(":person"))
-  }
-
-  get("/template/people/:person/edit/?") {
+  get("/template/"+resource+"/:id/edit/?") {
     template(
    <form action="." method="post" xmlns="http://www.w3.org/1999/xhtml">
-      <label>Edit some XSPARQL</label>
-      <textarea rows="40" cols="80" name="content">{ io.Source.fromFile("people/"+params(":person")).mkString }</textarea>
+     <label>Edit some <a href="http://xsparql.deri.org/spec">XSPARQL</a></label>
+      <textarea rows="40" cols="80" name="content">{ Source.fromFile(resource+"/"+params(":id")+".xsparql").mkString }</textarea>
       <input type="submit" method="post"/>
     </form>
    )}
 
-  post("/template/people/:person/?") {
-    val out = new FileWriter("people/" + params(":person"))
-    out.write( params("content") )
-    out.close()
+  post("/template/"+resource+"/:id/?") {
+    val filename = resource+"/"+params(":id")
+    val xsOut = new FileWriter(filename+".xsparql")
+    xsOut.write( params("content") )
+    xsOut.close()
+    val proc = Runtime.getRuntime.exec("xsparqler/xsparqler.py "+filename+".xsparql")
+    val xqOut = new FileOutputStream(filename+".xquery")
+    IOUtils.copy(proc.getInputStream, xqOut)
+    xqOut.close()
     template(<p xmlns="http://www.w3.org/1999/xhtml">Yeah, you saved it</p>)
   }
 
+  }
 
 }

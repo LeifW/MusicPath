@@ -6,9 +6,9 @@ import java.io.File
 object XQueryCall {
     val processor = new Processor(false)
     processor.registerExtensionFunction(ExtFunDef)
+    val compiler = processor.newXQueryCompiler
 
     def run(inputQuery:File) = {
-        val compiler = processor.newXQueryCompiler
         val query = compiler.compile(inputQuery)
         val result = query.load.evaluate
         result.toString
