@@ -180,10 +180,10 @@ class MusicPath extends Step {
   }
 
   
-  val url = "http://musicpath.org/"
+  val baseUrl = "http://musicpath.org/"
   //val db = TDBFactory.createModel("tdb_store.db")
   //implicit val model:Model = new Model( ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MICRO_RULE_INF, db) ) withPrefix url
-  implicit val model = Model withPrefix url
+  implicit val model = Model withPrefix baseUrl
   //model.read("file:///home/leif/musicpath/dump.ttl", "TURTLE")
 
   override def destroy {
@@ -290,20 +290,20 @@ class MusicPath extends Step {
   for (resource <- List("people", "bands")) {
 
   get("/template/"+resource+"/:id/?") {
-    XQueryCall run new File(resource, params(":id")+".xquery")
+    XQueryCall.run(new File(resource, resource+".xquery"), baseUrl+resource+'/'+params(":id"))
   }
 
-  get("/template/"+resource+"/:id/edit/?") {
+  get("/template/"+resource+"/edit/?") {
     template(
    <form action="." method="post" xmlns="http://www.w3.org/1999/xhtml">
      <label>Edit some <a href="http://xsparql.deri.org/spec">XSPARQL</a></label>
-      <textarea rows="40" cols="80" name="content">{ Source.fromFile(resource+"/"+params(":id")+".xsparql").mkString }</textarea>
+      <textarea rows="40" cols="80" name="content">{ Source.fromFile(resource+"/"+resource+".xsparql").mkString }</textarea>
       <input type="submit" method="post"/>
     </form>
    )}
 
-  post("/template/"+resource+"/:id/?") {
-    val filename = resource+"/"+params(":id")
+  post("/template/"+resource+"/?") {
+    val filename = resource+"/"+resource
     val xsOut = new FileWriter(filename+".xsparql")
     xsOut.write( params("content") )
     xsOut.close()

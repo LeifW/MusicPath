@@ -136,6 +136,8 @@ reserved = {
    'treat' : 'TREAT',
    'castable' : 'CASTABLE',
    'cast' : 'CAST',
+   'variable' : 'VARIABLE',
+   'external' : 'EXTERNAL',
    'of' : 'OF',
    'empty-sequence' : 'EMPTYSEQUENCE',
    'item' : 'ITEM',
@@ -511,12 +513,19 @@ def p_prolog(p):
     '''prolog : xqueryNS prolog
   	      | sparqlNS prolog
               | xqueryFunction prolog
+	      | xqueryVarDeclaration prolog
 	      | empty'''
     p[0] = '\n'.join(p[1:])
 
 
 def p_xqueryFunction(p):
     '''xqueryFunction : DECLARE FUNCTION qname LPAR paramList RPAR enclosedExpr SEMICOLON'''
+    p[0] = ' '.join(p[1:])
+
+def p_xqueryVarDeclaration(p):
+    '''xqueryVarDeclaration : DECLARE VARIABLE VAR typeDeclaration EXTERNAL SEMICOLON'''
+    global letVars
+    letVars += [p[3]]
     p[0] = ' '.join(p[1:])
 
 def p_paramList(p):
