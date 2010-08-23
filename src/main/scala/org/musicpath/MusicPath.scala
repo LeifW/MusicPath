@@ -308,12 +308,19 @@ class MusicPath extends Step {
     xsOut.write( params("content") )
     xsOut.close()
     val proc = Runtime.getRuntime.exec("xsparqler/xsparqler.py "+filename+".xsparql")
-    val xqOut = new FileOutputStream(filename+".xquery")
-    IOUtils.copy(proc.getInputStream, xqOut)
-    xqOut.close()
-    template(<p xmlns="http://www.w3.org/1999/xhtml">Yeah, you saved it</p>)
+    proc.waitFor
+    if (proc.exitValue == 0) {
+      val xqOut = new FileOutputStream(filename+".xquery")
+      IOUtils.copy(proc.getInputStream, xqOut)
+      xqOut.close()
+      template(<p xmlns="http://www.w3.org/1999/xhtml">Yeah, you saved it</p>)
+    } else {
+      response.setStatus(400)
+      contentType = "text/plain"
+      IOUtils.copy(proc.getErrorStream, response.getOutputStream)
+      ()
+    }
   }
-
-  }
+}
 
 }

@@ -5,3 +5,5 @@ project/boot/
 project/build/target
 *.swp
 *.db
+*.pyc
+*.orig
