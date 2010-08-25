@@ -158,7 +158,7 @@ class MusicPath extends Step {
       if (req/RDF.Type isEmpty)
         redirect(params(":id")+"/edit")
       else
-        template( res view req ) 
+        XQueryCall.run(new File(res.plural, res.plural+".xquery"), baseUrl+res.plural+'/'+params(":id"))
     }
 
     // GET /resourcetype/id/xml
@@ -175,6 +175,35 @@ class MusicPath extends Step {
     // GET /resourcetype/new
     get(subDir+"/new") { 
       redirect(params("ref")+"/edit") 
+    }
+
+    get(subDir+"/edit/?") {
+      template(
+     <form action="." method="post" xmlns="http://www.w3.org/1999/xhtml">
+       <label>Edit some <a href="http://xsparql.deri.org/spec">XSPARQL</a></label>
+        <textarea rows="40" cols="80" name="content">{ Source.fromFile(res.plural+"/"+res.plural+".xsparql").mkString }</textarea>
+        <input type="submit" method="post"/>
+      </form>
+     )}
+
+    post(subDir+"/?") {
+      val filename = res.plural+"/"+res.plural
+      val xsOut = new FileWriter(filename+".xsparql")
+      xsOut.write( params("content") )
+      xsOut.close()
+      val proc = Runtime.getRuntime.exec("xsparqler/xsparqler.py "+filename+".xsparql")
+      proc.waitFor
+      if (proc.exitValue == 0) {
+        val xqOut = new FileOutputStream(filename+".xquery")
+        IOUtils.copy(proc.getInputStream, xqOut)
+        xqOut.close()
+        template(<p xmlns="http://www.w3.org/1999/xhtml">Yeah, you saved it</p>)
+      } else {
+        response.setStatus(400)
+        contentType = "text/plain"
+        IOUtils.copy(proc.getErrorStream, response.getOutputStream)
+        ()
+      }
     }
 
   }

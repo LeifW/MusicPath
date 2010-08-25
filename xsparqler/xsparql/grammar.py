@@ -498,9 +498,9 @@ def p_mainModule(p):
 
     global prefix_namespaces
 
-    #prefix =  '\nimport module namespace _xsparql = "http://xsparql.deri.org/XSPARQLer/xsparql.xquery"\n'
-    #prefix += 'at "http://xsparql.deri.org/XSPARQLer/xsparql.xquery";\n\n'
-    prefix = 'declare namespace _sparql_result = "http://www.w3.org/2005/sparql-results#";\n'
+    prefix =  'import module namespace _xsparql = "http://xsparql.deri.org/XSPARQLer/xsparql.xquery"\n'
+    prefix += 'at "../xsparql.xquery";\n'
+    prefix += 'declare namespace _sparql_result = "http://www.w3.org/2005/sparql-results#";\n'
     prefix += 'declare namespace mp = "http://musicpath.org/ns/xsparql-fn#";\n\n'
     prefix += lowrewriter.print_namespaces(prefix_namespaces)
 
