@@ -2,6 +2,7 @@ package org.musicpath
 
 import net.sf.saxon.s9api._
 import java.io.File
+import java.io.OutputStream
 import java.net.URI
 
 object XQueryCall {
@@ -14,8 +15,11 @@ object XQueryCall {
         val evaluator = query.load
         //evaluator.setExternalVariable(new QName("this"), new XdmAtomicValue(new URI(self)))
         evaluator.setExternalVariable(new QName("this"), new XdmAtomicValue('<'+self+'>'))
-        val result = evaluator.evaluate
-        result.toString
+        //val destination = new Serializer
+        //destination.setOutputStream(ostream)
+        //evaluator.setDestination(destination)
+        //evaluator.run(destination)
+        evaluator.evaluateSingle
     }
 }
 

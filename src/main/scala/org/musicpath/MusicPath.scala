@@ -8,7 +8,9 @@ import scala.xml.{ProcInstr,NodeSeq,Text}
 import com.thinkminimo.step._                  // Web framework
 import net.croz.scardf._                       // Jena wrapper
 import com.hp.hpl.jena.rdf.model.ResourceFactory  // 
+import saxon2scala.Saxon2Scala.convert
 import Scene._                                 // Predicates in musicpath ontology
+import net.sf.saxon.s9api.{Serializer,XdmNode}
 //import com.tristanhunt._
 
 // This class mostly defines routes.  A couple view helpers are factored out into the "View" object.
@@ -157,8 +159,15 @@ class MusicPath extends Step {
       val req = Res(res.plural+"/"+params(":id"))
       if (req/RDF.Type isEmpty)
         redirect(params(":id")+"/edit")
-      else
-        XQueryCall.run(new File(res.plural, res.plural+".xquery"), baseUrl+res.plural+'/'+params(":id"))
+      else {
+        val templated = convert(XQueryCall.run(new File(res.plural, res.plural+".xquery"), baseUrl+res.plural+'/'+params(":id")))
+        <html xmlns="http://www.w3.org/1999/xhtml"> 
+          <head>
+            <title>{templated\"@title"}</title>
+          </head>
+          <body>{templated}</body>
+        </html>
+      }
     }
 
     // GET /resourcetype/id/xml

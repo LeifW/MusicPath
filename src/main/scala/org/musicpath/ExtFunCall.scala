@@ -1,9 +1,9 @@
 package org.musicpath
 
-import net.sf.saxon.functions.ExtensionFunctionCall
+import net.sf.saxon.lib.ExtensionFunctionCall
 import net.sf.saxon.om.SequenceIterator
-import net.sf.saxon.om.SingletonIterator.makeIterator
-import net.sf.saxon.om.SingleNodeIterator
+import net.sf.saxon.tree.iter.SingletonIterator.makeIterator
+//import net.sf.saxon.om.SingleNodeIterator
 import net.sf.saxon.expr.XPathContext
 import net.sf.saxon.om.StructuredQName
 import net.sf.saxon.value.SequenceType.{SINGLE_STRING, SINGLE_ELEMENT_NODE}
