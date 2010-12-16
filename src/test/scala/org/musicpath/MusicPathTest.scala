@@ -1,11 +1,11 @@
 package org.musicpath
 
-import com.thinkminimo.step._
+import org.scalatra.test.scalatest.ScalatraSuite
 import org.scalatest.matchers.ShouldMatchers
 //import org.specs._
 
-class MusicPathTest extends StepSuite with ShouldMatchers {
-  route(classOf[MusicPath], "/*")
+class MusicPathTest extends ScalatraSuite with ShouldMatchers {
+  addServlet(classOf[MusicPath], "/*")
 
   test("GET / should return index") {
     get("/") {

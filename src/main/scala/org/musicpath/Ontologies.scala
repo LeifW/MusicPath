@@ -1,47 +1,48 @@
 package org.musicpath
-import net.croz.scardf.{Vocabulary, XSD}
+import org.scardf.Vocabulary
 import com.hp.hpl.jena.vocabulary.{OWL => jOWL}
 import com.hp.hpl.jena.sparql.vocabulary.{FOAF => jFOAF}
 
 object Scene extends Vocabulary("http://musicpath.org/scene#") {
-  val Band = pRes("Band")
-  val Stint = pRes("Stint")
+  val Band = Scene\"Band"
+  val Stint = Scene\"Stint"
+  val by = prop("by")
+  val in = prop("in")
+  val name = propStr("name")
+  val position = prop("position")
+  val performs = prop("performs")
+  val plays = prop("plays")
+  val started = propInt("started")
 
-  val by = pProp("by")
-  val in = pProp("in")
-  val name = pProp("name")
-  val position = pProp("position")
-  val performs = pProp("performs")
-  val plays = pProp("plays")
-  val started = pProp("started")
-
-  val description = pProp("description") withRange XSD.string
+  val description = propStr("description") 
 }
 
-object FOAF extends Vocabulary( jFOAF.getURI ) {
-  val Person = wRes( jFOAF.Person )
+object FOAF extends Vocabulary("") {
+  val Person = FOAF\jFOAF.Person.getURI 
 
-  val givenname = wProp( jFOAF.givenname )
-  val name = wProp( jFOAF.name )
+  val givenname = propStr( jFOAF.givenname.getURI )
+  val name = propStr( jFOAF.name.getURI )
 }
 
 object MO extends Vocabulary("http://purl.org/ontology/mo/") {
-  val MusicGroup = pRes("MusicGroup")
-  val Electric_Guitar = pRes("Electric_Guitar")
+  val MusicGroup = MO\"MusicGroup"
+  /*
+  val Electric_Guitar = MO\"Electric_Guitar")
   val Electric_bass_guitar = pRes("Electric_bass_guitar")
   val Drumset = pRes("Drumset")
+  */
 }
 
-object OWL extends Vocabulary( jOWL.getURI ) {
-  val sameAs = wProp( jOWL.sameAs )
+object OWL extends Vocabulary("") {
+  val sameAs = prop( jOWL.sameAs.getURI )
 }
 
+/*
 object Apf extends Vocabulary("http://jena.hpl.hp.com/ARQ/property#") {
   val splitIRI = pProp("splitIRI")
   val splitURI = pProp("splitURI")
 }
 
-/*
 Sparql select ('p, 'local, 'prefix) where (
   ('p, performs, 'stint), 
   ('stint, in, 'band), 
