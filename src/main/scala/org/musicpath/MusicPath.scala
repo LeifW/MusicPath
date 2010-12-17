@@ -13,9 +13,11 @@ import org.scardf._
 // This class mostly defines routes.  A couple view helpers are factored out into the "View" object.
 class MusicPath extends ScalatraServlet {
 
+  /*
   before {
     response.setHeader("MS-Author-via", "SPARQL")
   }
+  */
 
   get("/") {
       <home title="Home"/>

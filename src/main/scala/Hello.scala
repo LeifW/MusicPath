@@ -4,21 +4,27 @@ import java.net.URI
 import com.hp.hpl.jena.sparql.vocabulary.{FOAF => jFOAF}
 object FOAF extends Vocabulary( jFOAF.getURI ) {
 //  val Person = wRes( jFOAF.Person )
-
-  val List(name, givenname, knows) = 
+  val List(name, givenname, knows) =
       List("name", "givenname", "knows") map prop
-
 }
 
+/*
+  Welcome to Linked Data.
+  You are at Node 0.
+  Use "rel" followed at some point by a resource, href, or src attribute to traverse to a new subject.
+  Use "property" to list a property of the current subject.
+  Go!
+ */
     
 object Temp {
 val List(leif, john, bill) = List("http://leif.com", "http://john.com", "http://bill.com").map(UriRef(_))
-val g = Graph(leif -FOAF.knows-> ObjSet(bill, john))
+val g = Graph(leif -(FOAF.name->"Leif", FOAF.knows-> ObjSet(bill, john)), john-FOAF.name->"John", bill-FOAF.name->"Bill")
 //val g = Graph(leif -FOAF.knows-> ObjSet(bill-FOAF.name->"Bill", john-FOAF.name->"John"))
 
 val knowsTemp =
  <p xmlns:foaf="http://xmlns.com/foaf/0.1/">
-     <a rel="foaf:knows" href=""/>
+     <span property="foaf:name"/>
+     <a rel="foaf:knows" href=""><span property="foaf:name"/></a>
  </p>
 
 val doc1 = 
@@ -97,7 +103,7 @@ val doc2 =
         val processedChildren = e.child flatMap processLinks(subject, rel) 
         val templated = e.attribute("property") match {
             //case Some(prop) =>  prop ++ processedChildren
-            case Some(prop) => Text(prop.text) +: processedChildren
+            case Some(prop) => Text(g/subject/UriRef(resolve(prop.text, e.scope))/NodeConverter.asString) +: processedChildren
             case None => processedChildren
         }
         e.copy(child=templated) //Elem(null, e.label, e.attributes, e.scope, templated : _*) 
@@ -105,7 +111,7 @@ val doc2 =
             //Elem(null, label, attributes, scope, templated : _*) 
 
     //def attr2UriRef(implicit scope:Scope)(attr:Attribute):UriRef
-    def realizeLink(e:Elem, attr:String)(node:Node) = {
+    def realizeLink(e:Elem, attr:String)(node:Node):Elem = {
         val subject = node.asInstanceOf[UriRef]
         //propertize(Elem(null, e.label, e.attributes, e.scope, e.child : _*))(s)
         val attributes = new UnprefixedAttribute(attr, subject.uri, e.attributes.remove(attr))
@@ -115,6 +121,39 @@ val doc2 =
     def resolve(qname:String, scope:NamespaceBinding) = {
         val Array(prefix, local) = qname split ':'
         scope.getURI(prefix) + local
+    }
+/*
+  def processLinks(subject:UriRef, node:Node):NodeSeq = node match {
+    case e:Elem => {
+      e.attribute("rel") match {
+        case Some(rel) => {
+          List("resource", "href", "src").dropWhile(!atts.contains(_)).headOption match {
+            case Some(link) => subjecet/UriRef(rel) map realizeLink(e)
+            case None => subjecet/UriRef(rel) map copyTillLink(subject, e)
+          }
+        }
+      }
+    }
+  }
+
+  }
+  // TraverseTillAndThen(condition, action)(node)
+
+     def copyTilLink(subject)(node:Node):Node = node match {
+     | case e:Elem => {
+     | val atts = e.attributes.map(_.key).toSet
+     | List("resource", "href", "src").dropWhile(!atts.contains(_)).headOption match {
+     | case Some(ref) => Text(ref)
+     | case None => e.copy(child=n.child.map(copyTilLink))
+     | }
+     | }
+     | case other=> other
+     | }
+  */
+
+    def getLink(e:Elem):Option[String] ={
+      val atts = e.attributes.map(_.key).toSet
+      List("resource", "href", "src").dropWhile(!atts.contains(_)).headOption
     }
 
     def processLinks(subject:UriRef, rel:Option[UriRef])(node:scala.xml.Node):NodeSeq = node match {
@@ -126,11 +165,9 @@ val doc2 =
             } 
             currentRel match {
                 case Some(rel) => {
-                    val atts = e.attributes.map(_.key).toSet
-                    // Take the first link attribute name found: 
-                    List("resource", "href", "src").dropWhile(!atts.contains(_)).headOption match {
-                    //List("resource", "href", "src").map(e.attribute).flatten match {
-                        //case List(ref) => (g/subject/rel map ((s)=>propertize(e)(s.asInstanceOf[UriRef]))).toSeq.flatten 
+                    // Take the first link attribute name found:
+                    getLink(e) match {
+                        //case List(ref) => (g/subject/rel map ((s)=>propertize(e)(s.asInstanceOf[UriRef]))).toSeq.flatten
                         case Some(ref) => (g/subject/rel map realizeLink(e, ref)).toSeq.flatten 
                         case None => propertize(e, Some(rel))(subject)
                         //case other => error("Duplicate resource links for "+e.label+" element: "+other.mkString(", "))
