@@ -1,11 +1,12 @@
 import org.scardf._
-import scala.xml.{NodeSeq, Elem, Text}
+import scala.xml.{NodeSeq, Elem, Text, NamespaceBinding, UnprefixedAttribute}
+import java.net.URI
 import com.hp.hpl.jena.sparql.vocabulary.{FOAF => jFOAF}
 object FOAF extends Vocabulary( jFOAF.getURI ) {
 //  val Person = wRes( jFOAF.Person )
 
   val List(name, givenname, knows) = 
-      List("name", "givenname", "knows").map(prop)
+      List("name", "givenname", "knows") map prop
 
 }
 
@@ -13,10 +14,11 @@ object FOAF extends Vocabulary( jFOAF.getURI ) {
 object Temp {
 val List(leif, john, bill) = List("http://leif.com", "http://john.com", "http://bill.com").map(UriRef(_))
 val g = Graph(leif -FOAF.knows-> ObjSet(bill, john))
+//val g = Graph(leif -FOAF.knows-> ObjSet(bill-FOAF.name->"Bill", john-FOAF.name->"John"))
 
 val knowsTemp =
- <p>
-     <a rel="http://xmlns.com/foaf/0.1/knows" href=""/>
+ <p xmlns:foaf="http://xmlns.com/foaf/0.1/">
+     <a rel="foaf:knows" href=""/>
  </p>
 
 val doc1 = 
@@ -90,39 +92,56 @@ val doc2 =
   </p>
 </div>
     val start = "http://musicpath.org/people/leif"
+    def propertize(e:Elem)(subject:UriRef):Elem = propertize(e, None)(subject) 
+    def propertize(e:Elem, rel:Option[UriRef])(subject:UriRef):Elem = {
+        val processedChildren = e.child flatMap processLinks(subject, rel) 
+        val templated = e.attribute("property") match {
+            //case Some(prop) =>  prop ++ processedChildren
+            case Some(prop) => Text(prop.text) +: processedChildren
+            case None => processedChildren
+        }
+        e.copy(child=templated) //Elem(null, e.label, e.attributes, e.scope, templated : _*) 
+    }
+            //Elem(null, label, attributes, scope, templated : _*) 
 
-    def curse(rel:Option[String], subject:String)(n:scala.xml.Node):NodeSeq = n match {
+    //def attr2UriRef(implicit scope:Scope)(attr:Attribute):UriRef
+    def realizeLink(e:Elem, attr:String)(node:Node) = {
+        val subject = node.asInstanceOf[UriRef]
+        //propertize(Elem(null, e.label, e.attributes, e.scope, e.child : _*))(s)
+        val attributes = new UnprefixedAttribute(attr, subject.uri, e.attributes.remove(attr))
+        propertize(e.copy(attributes = attributes))(subject) 
+    }
+
+    def resolve(qname:String, scope:NamespaceBinding) = {
+        val Array(prefix, local) = qname split ':'
+        scope.getURI(prefix) + local
+    }
+
+    def processLinks(subject:UriRef, rel:Option[UriRef])(node:scala.xml.Node):NodeSeq = node match {
         //case Elem(prefix, label, attributes, scope, children @ _*) => {
         case e:Elem => {
-            val newRel = e.attribute("rel") match {
+            val currentRel = e.attribute("rel") match {
+                case Some(r) => Some(UriRef(resolve(r.text, e.scope)))
                 case None => rel
-                case something => something.map(_.text)
-            } //.map(_.text).getOrElse(rel) 
-            val property = e.attribute("property")
-            List("resource", "href", "src").map(e.attribute).flatten match {
-                case List(ref) => (g/UriRef(subject)/UriRef(newRel) map ((s)=>curse(None, s.asInstanceOf[UriRef].uri)(e)).toSeq.flatten // RDF:[subject.get(newRel)].map(curse(None, _)(e))
-            //val rel = attributes.get("rel").map(_.text)
-            val property = e.attribute("property")
-            */
-            val newSubject = List("resource", "href", "src").map(e.attribute).flatten match {
-                case List(ref) => ref text // subject[rel].foreach yield Elem(null, label, attributes, scope, processedKids...)  e.g. map curse self
-                case List() => subject
-                case other => error("Duplicate resources for "+e.label+" element: " + other.mkString(", "))
+            } 
+            currentRel match {
+                case Some(rel) => {
+                    val atts = e.attributes.map(_.key).toSet
+                    // Take the first link attribute name found: 
+                    List("resource", "href", "src").dropWhile(!atts.contains(_)).headOption match {
+                    //List("resource", "href", "src").map(e.attribute).flatten match {
+                        //case List(ref) => (g/subject/rel map ((s)=>propertize(e)(s.asInstanceOf[UriRef]))).toSeq.flatten 
+                        case Some(ref) => (g/subject/rel map realizeLink(e, ref)).toSeq.flatten 
+                        case None => propertize(e, Some(rel))(subject)
+                        //case other => error("Duplicate resource links for "+e.label+" element: "+other.mkString(", "))
+                    }
+                }
+                case None => propertize(e)(subject)
             }
-            println(newSubject)
-            //currentSubject = e.attribute("
-            val processedChildren = e.child.flatMap(curse(newRel, subject))
-            val templated = property match {
-                case Some(prop) =>  prop ++ processedChildren
-                //case Some(prop) => Text(prop text) +: processedChildren
-                case None => processedChildren
-            }
-            //Elem(null, label, attributes, scope, templated : _*) 
-            Elem(null, e.label, e.attributes, e.scope, property.getOrElse(Nil) ++ processedChildren : _*) 
         }
         case t:Text => t //Text("yes") //substitute {}'s
     }
-
+/*
     def template(n:scala.xml.Node)(subject:String):Node = {
         
         
@@ -130,6 +149,7 @@ val doc2 =
     }
 
     def repeat
+    */
 }
 
 // vim: set ts=4 sw=4 et:
