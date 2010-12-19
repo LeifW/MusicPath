@@ -1,9 +1,10 @@
-import org.scardf._
-import scala.xml.{NodeSeq, Elem, Text, NamespaceBinding, UnprefixedAttribute}
+import org.scardf.{NodeConverter, Property, GraphNode, Vocabulary, UriRef}
+import NodeConverter.{asString, asSubjectNode, asGraphNode}
+import scala.xml.{NodeSeq, Node, Elem, Text, NamespaceBinding, UnprefixedAttribute}
 import java.net.URI
 import com.hp.hpl.jena.sparql.vocabulary.{FOAF => jFOAF}
+import org.musicpath.Model
 object FOAF extends Vocabulary( jFOAF.getURI ) {
-//  val Person = wRes( jFOAF.Person )
   val List(name, givenname, knows) =
       List("name", "givenname", "knows") map prop
 }
@@ -11,15 +12,16 @@ object FOAF extends Vocabulary( jFOAF.getURI ) {
 /*
   Welcome to Linked Data.
   You are at Node 0.
-  Use "rel" followed at some point by a resource, href, or src attribute to traverse to a new subject.
+  Use "rel" followed at some point by a resource, href, or src attribute to traverse to a new subject (node).
   Use "property" to list a property of the current subject.
   Go!
  */
     
 object Temp {
 val List(leif, john, bill) = List("http://leif.com", "http://john.com", "http://bill.com").map(UriRef(_))
-val g = Graph(leif -(FOAF.name->"Leif", FOAF.knows-> ObjSet(bill, john)), john-FOAF.name->"John", bill-FOAF.name->"Bill")
+//val g = Graph(leif -(FOAF.name->"Leif", FOAF.knows-> ObjSet(bill, john)), john-FOAF.name->"John", bill-FOAF.name->"Bill")
 //val g = Graph(leif -FOAF.knows-> ObjSet(bill-FOAF.name->"Bill", john-FOAF.name->"John"))
+lazy val g = Model
 
 val knowsTemp =
  <p xmlns:foaf="http://xmlns.com/foaf/0.1/">
@@ -28,60 +30,19 @@ val knowsTemp =
  </p>
 
 val doc1 = 
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:mp="http://musicpath.org" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:mp="http://musicpath.org/scene#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
   <head>
-    <title>Cull</title>
+    <title property="foaf:name"/>
   </head>
   <body>
-    <div rel="foaf:primaryTopic" resource="#band">
-      <h2 property="foaf:name">Cull</h2>
-      <ul rel="mp:by">
-        <li resource="/stints/ansel_cull">
-          <span>
-		  <a rel="mp:by" href="http://musicpath.org/people/ansel"><span property="foaf:givenName">Ansel</span></a>
-		  <span rel="mp:plays" resource="/instruments/drums"><span property="rdfs:label"> on Drums</span></span>
-          </span>
+    <div> <!-- rel="foaf:primaryTopic" resource="#band"-->
+      <h2 property="foaf:name"/>
+      <ul rel="mp:position">
+        <li resource="">
+          <a rel="mp:by" href=""><span property="foaf:givenname"/></a>
+          on <span rel="mp:plays" resource=""><span property="rdfs:label"/></span>
         </li>
-        <li resource="/stints/melissa_cull">
-          <span>
-		  <a rel="mp:by" href="http://musicpath.org/people/melissa"><span property="foaf:givenName">Melissa</span></a>
-            <span> on Guitar</span>
-          </span>
-        </li>
-        <li>
-          <span>
-            <a href="http://musicpath.org/people/dylan">Dylan</a>
-            <span> on Guitar</span>
-          </span>
-        </li>
-        <li/>
       </ul>
-      <div rel="mp:related">
-        <h4>Related bands:</h4>
-        <p>
-          <div>
-            <a href="http://musicpath.org/bands/sick_sick_sister">Sick Sick Sister</a>
-          </div>
-          <div>
-            <a href="http://musicpath.org/bands/ootg">Order of the Gash</a>
-          </div>
-          <div>
-            <a href="http://musicpath.org/bands/sickie_sickie">Sickie Sickie</a>
-          </div>
-          <div>
-            <a href="http://musicpath.org/bands/sei_hexe">Sei Hexe</a>
-          </div>
-          <div>
-            <a href="http://musicpath.org/bands/anonremora">Anon Remora</a>
-          </div>
-          <div>
-            <a href="http://musicpath.org/bands/honduran">Honduran</a>
-          </div>
-          <div>
-            <a href="http://musicpath.org/bands/slamdunk">Slam Dunk</a>
-          </div>
-        </p>
-      </div>
     </div>
   </body>
 </html>
@@ -98,27 +59,44 @@ val doc2 =
   </p>
 </div>
     val start = "http://musicpath.org/people/leif"
-    def propertize(e:Elem)(subject:UriRef):Elem = propertize(e, None)(subject) 
-    def propertize(e:Elem, rel:Option[UriRef])(subject:UriRef):Elem = {
-        val processedChildren = e.child flatMap processLinks(subject, rel) 
-        val templated = e.attribute("property") match {
+    //def propertize(e:Elem)(subject:UriRef):Elem = propertize(e, None)(subject)
+    private def propertize(e:Elem)(subject:GraphNode):NodeSeq = {
+        val processedChildren = e.child flatMap processLinks(subject)
+        e.attribute("property") match {
             //case Some(prop) =>  prop ++ processedChildren
-            case Some(prop) => Text(g/subject/UriRef(resolve(prop.text, e.scope))/NodeConverter.asString) +: processedChildren
-            case None => processedChildren
+            case Some(prop) => propertyOf(subject, prop, e.scope).map((s) => e.copy(child=Text(s) +: processedChildren)).toSeq.flatten
+            case None => e.copy(child=processedChildren)
         }
-        e.copy(child=templated) //Elem(null, e.label, e.attributes, e.scope, templated : _*) 
+        //e.copy(child=templated) //Elem(null, e.label, e.attributes, e.scope, templated : _*)
     }
-            //Elem(null, label, attributes, scope, templated : _*) 
+
+    def propertyOf(subject:GraphNode, qname:NodeSeq, scope:NamespaceBinding):Iterable[String] = subject/UriRef(resolve(qname.text, scope))/asString.iterable //:Property[String]).set ///asString.iterable
 
     //def attr2UriRef(implicit scope:Scope)(attr:Attribute):UriRef
-    def realizeLink(e:Elem, attr:String)(node:Node):Elem = {
-        val subject = node.asInstanceOf[UriRef]
+    private def realizeLink(e:Elem, attr:String)(subject:GraphNode):Elem = {
+        //val subject = node.asInstanceOf[UriRef]
         //propertize(Elem(null, e.label, e.attributes, e.scope, e.child : _*))(s)
-        val attributes = new UnprefixedAttribute(attr, subject.uri, e.attributes.remove(attr))
-        propertize(e.copy(attributes = attributes))(subject) 
+        val link = new UnprefixedAttribute(attr, subject.node.asInstanceOf[UriRef].uri, e.attributes.remove(attr))
+        // Templating of properties is done a bit different on elements with a resource link, thus is is handled directly here.
+        // If the property has a value,, put it in there as a text node.  If not, delete the property attribute.
+        // More than one value is a warning (put that property on a child element!).
+        val processedChildren = e.child flatMap processLinks(subject)
+        val (contents, attributes) = e.attribute("property") match {
+          case Some(prop) => propertyOf(subject, prop, e.scope) match {
+            case List() => (processedChildren, link.remove("property"))
+            case List(value) => (Text(value) +: processedChildren, link)
+            case many => {
+              println("More than one "+prop.text+" found for "+subject.node.toString+" on element "+e.label+", ignoring rest.")
+              (Text(many.head) +: processedChildren, link)
+            }
+          }
+          case None=> (processedChildren, link)
+        }
+        //propertize(e.copy(attributes = attributes))(subject)
+        e.copy(attributes = attributes, child = contents )
     }
 
-    def resolve(qname:String, scope:NamespaceBinding) = {
+    private def resolve(qname:String, scope:NamespaceBinding):String = {
         val Array(prefix, local) = qname split ':'
         scope.getURI(prefix) + local
     }
@@ -139,54 +117,43 @@ val doc2 =
   }
   // TraverseTillAndThen(condition, action)(node)
 
-     def copyTilLink(subject)(node:Node):Node = node match {
-     | case e:Elem => {
-     | val atts = e.attributes.map(_.key).toSet
-     | List("resource", "href", "src").dropWhile(!atts.contains(_)).headOption match {
-     | case Some(ref) => Text(ref)
-     | case None => e.copy(child=n.child.map(copyTilLink))
-     | }
-     | }
-     | case other=> other
-     | }
-  */
+    */
 
-    def getLink(e:Elem):Option[String] ={
+    private def copyTilLink(node:Node)(subject:GraphNode):Node = node match {
+      case e:Elem => {
+        getLink(e) match {
+          case Some(ref) => realizeLink(e, ref)(subject)
+          case None => e.copy(child=e.child.map(copyTilLink(_)(subject)))
+        }
+      }
+      case other=> other
+    }
+
+    private def getLink(e:Elem):Option[String] ={
       val atts = e.attributes.map(_.key).toSet
       List("resource", "href", "src").dropWhile(!atts.contains(_)).headOption
     }
-
-    def processLinks(subject:UriRef, rel:Option[UriRef])(node:scala.xml.Node):NodeSeq = node match {
-        //case Elem(prefix, label, attributes, scope, children @ _*) => {
+    // TODO: the old subject is valid until the children of the node with the link.
+    // Make two behaviours for this: 
+    // - One which additionally carries a new subject, doesn't look for rel attributes, and looks for a link attribute.
+    // - The other, the default, is to just carry a subject, and be on the lookout for rel attributes.
+    def processLinks(subject:GraphNode)(node:Node):NodeSeq = node match {
         case e:Elem => {
-            val currentRel = e.attribute("rel") match {
-                case Some(r) => Some(UriRef(resolve(r.text, e.scope)))
-                case None => rel
-            } 
-            currentRel match {
+            e.attribute("rel") match {
                 case Some(rel) => {
                     // Take the first link attribute name found:
+                    val newSubjects = subject/UriRef(resolve(rel.text, e.scope))/asGraphNode.iterable ///asGraphNode.iterable
                     getLink(e) match {
-                        //case List(ref) => (g/subject/rel map ((s)=>propertize(e)(s.asInstanceOf[UriRef]))).toSeq.flatten
-                        case Some(ref) => (g/subject/rel map realizeLink(e, ref)).toSeq.flatten 
-                        case None => propertize(e, Some(rel))(subject)
-                        //case other => error("Duplicate resource links for "+e.label+" element: "+other.mkString(", "))
+                        case Some(ref) => newSubjects.map(realizeLink(e, ref)).toSeq.flatten
+                        case None => e.copy(child=newSubjects.map(copyTilLink(e.child.dropWhile(!_.isInstanceOf[Elem]).head)).toSeq.flatten) //propertize(e, Some(rel))(subject)
                     }
                 }
                 case None => propertize(e)(subject)
             }
         }
-        case t:Text => t //Text("yes") //substitute {}'s
+        case other => other
+        //case t:Text => t
     }
-/*
-    def template(n:scala.xml.Node)(subject:String):Node = {
-        
-        
-        curse(None, subject
-    }
-
-    def repeat
-    */
 }
 
 // vim: set ts=4 sw=4 et:
