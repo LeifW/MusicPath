@@ -2,7 +2,7 @@ package org.scardf.jena
 import com.hp.hpl.jena.rdf.model.{Model,RDFNode}
 import org.scardf._
 
-class JNeo(m:Model) extends JenaGraph(m) {
+class JenaGraphPlus(m:Model) extends JenaGraph(m) {
     //def thing = m.listStatements
     //def resourcesWithProperty(p:Property, o:RDFNode): Set[SubjectNode] = Set() ++ new JenaResIterator( m.listResourcesWithProperty(p:Property, o:RDFNode) )
     //def resourcesWithProperty[T](p:Property[T], o:Node) = new JenaResIterator( m.listResourcesWithProperty(p:Property, o:RDFNode) )

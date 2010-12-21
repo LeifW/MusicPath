@@ -1,9 +1,11 @@
+package org.musicpath
+
 import org.scardf.{NodeConverter, Property, GraphNode, Vocabulary, UriRef}
 import NodeConverter.{asString, asSubjectNode, asGraphNode}
 import scala.xml.{NodeSeq, Node, Elem, Text, NamespaceBinding, UnprefixedAttribute}
 import java.net.URI
 import com.hp.hpl.jena.sparql.vocabulary.{FOAF => jFOAF}
-import org.musicpath.Model
+//import org.musicpath.Model
 object FOAF extends Vocabulary( jFOAF.getURI ) {
   val List(name, givenname, knows) =
       List("name", "givenname", "knows") map prop
@@ -21,7 +23,7 @@ object Temp {
 val List(leif, john, bill) = List("http://leif.com", "http://john.com", "http://bill.com").map(UriRef(_))
 //val g = Graph(leif -(FOAF.name->"Leif", FOAF.knows-> ObjSet(bill, john)), john-FOAF.name->"John", bill-FOAF.name->"Bill")
 //val g = Graph(leif -FOAF.knows-> ObjSet(bill-FOAF.name->"Bill", john-FOAF.name->"John"))
-lazy val g = Model
+//lazy val g = Model
 
 val knowsTemp =
  <p xmlns:foaf="http://xmlns.com/foaf/0.1/">
@@ -33,6 +35,7 @@ val doc1 =
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:mp="http://musicpath.org/scene#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
   <head>
     <title property="foaf:name"/>
+    <script src="/js/jquery-1.4.4.min.js"/>
   </head>
   <body>
     <div> <!-- rel="foaf:primaryTopic" resource="#band"-->

@@ -22,4 +22,9 @@ class MusicPath extends ScalatraServlet {
   get("/") {
       <home title="Home"/>
   }
+
+  get("/cull") {
+    Temp.processLinks(Model/UriRef("http://musicpath.org/bands/cull"))(Temp.doc1)
+  }
+
 }
