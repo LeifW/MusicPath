@@ -1,6 +1,6 @@
 package org.musicpath
 
-import org.scardf.jena._                       // Jena wrapper
+import org.scardf.jena.JenaGraphPlus           // Jena wrapper
 import com.hp.hpl.jena.rdf.model.ModelFactory  
 import com.hp.hpl.jena.ontology.OntModelSpec   // Inferencing
 import com.hp.hpl.jena.tdb.TDBFactory          // DB Store

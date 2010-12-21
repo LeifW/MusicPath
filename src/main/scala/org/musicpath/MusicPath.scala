@@ -7,24 +7,26 @@ import scala.xml.XML
 import scala.xml.{ProcInstr,NodeSeq,Text}
 import org.scalatra.ScalatraServlet                  // Web framework
 import org.scardf._
-//import com.hp.hpl.jena.rdf.model.ResourceFactory  // 
+import Template.processLinks
 //import com.tristanhunt._
 
-// This class mostly defines routes.  A couple view helpers are factored out into the "View" object.
 class MusicPath extends ScalatraServlet {
 
-  /*
-  before {
-    response.setHeader("MS-Author-via", "SPARQL")
-  }
-  */
+  val server = "http://musicpath.org/"
 
   get("/") {
       <home title="Home"/>
   }
 
+/*
   get("/cull") {
-    Temp.processLinks(Model/UriRef("http://musicpath.org/bands/cull"))(Temp.doc1)
+    processLinks(Model/UriRef("http://musicpath.org/bands/cull"))(bandTemp)
   }
-
+*/
+  get("/:kind/:id") {
+    val kind = params("kind")
+    val id = params("id")
+    val template = XML.load(kind+"/view.html")
+    processLinks(Model/UriRef(server+kind+"/"+id))(template)
+  }
 }

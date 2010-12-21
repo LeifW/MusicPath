@@ -17,11 +17,10 @@ object Scene extends Vocabulary("http://musicpath.org/scene#") {
   val description = propStr("description") 
 }
 
-object FOAF extends Vocabulary("") {
-  val Person = FOAF\jFOAF.Person.getURI 
-
-  val givenname = propStr( jFOAF.givenname.getURI )
-  val name = propStr( jFOAF.name.getURI )
+object FOAF extends Vocabulary( jFOAF.getURI ) {
+  val Person = FOAF\"Person"
+  val List(name, givenname) =
+      List("name", "givenname") map propStr
 }
 
 object MO extends Vocabulary("http://purl.org/ontology/mo/") {
@@ -33,23 +32,6 @@ object MO extends Vocabulary("http://purl.org/ontology/mo/") {
   */
 }
 
-object OWL extends Vocabulary("") {
-  val sameAs = prop( jOWL.sameAs.getURI )
+object OWL extends Vocabulary(jOWL.getURI) {
+  val sameAs = prop("sameAs")
 }
-
-/*
-object Apf extends Vocabulary("http://jena.hpl.hp.com/ARQ/property#") {
-  val splitIRI = pProp("splitIRI")
-  val splitURI = pProp("splitURI")
-}
-
-Sparql select ('p, 'local, 'prefix) where (
-  ('p, performs, 'stint), 
-  ('stint, in, 'band), 
-  ('band, Apf.splitIRI, 'list), 
-  ('list, RDF.first, 'prefix), 
-  ('list, RDF.rest, 'second), 
-  ('second, RDF.first, 'local), 
-  ('second, RDF.rest, 'rest)
-)
-*/
