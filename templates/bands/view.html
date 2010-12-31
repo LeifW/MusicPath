@@ -1,0 +1,23 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:mp="http://musicpath.org/scene#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <head>
+    <title property="foaf:name"/>
+    <script src="/js/jquery-1.4.4.min.js" />
+    <!--script src="/js/jquery.rdfquery.core-1.0.js"/>
+    <script src="/js/jquery.rdfquery.rdfa-1.0.js"/-->
+    <script src="webapp/js/underscore-min.js"></script>
+    <script src="webapp/js/jquery.childrenUntil.js"></script>
+    <script src="/js/edit.js" />
+  </head>
+  <body>
+    <div class="editable"> <!-- rel="foaf:primaryTopic" resource="#band"-->
+      <h2 property="foaf:name"/>
+      <ul rel="mp:position">
+        <li resource="" class="blank-node">
+          <a rel="mp:by" href="" data-cardinality="1"><span property="foaf:givenname"/></a>
+          on <span rel="mp:plays" resource=""><span property="rdfs:label"/></span>
+	  since <span property="mp:started"/>
+        </li>
+      </ul>
+    </div>
+  </body>
+</html>

@@ -21,6 +21,7 @@ object FOAF extends Vocabulary( jFOAF.getURI ) {
   val Person = FOAF\"Person"
   val List(name, givenname) =
       List("name", "givenname") map propStr
+  val knows = prop("knows")
 }
 
 object MO extends Vocabulary("http://purl.org/ontology/mo/") {
