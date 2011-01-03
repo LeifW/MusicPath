@@ -15,6 +15,8 @@ object Scene extends Vocabulary("http://musicpath.org/scene#") {
   val started = propInt("started")
 
   val description = propStr("description") 
+
+  val count = propInt("count")
 }
 
 object FOAF extends Vocabulary( jFOAF.getURI ) {
@@ -34,5 +36,6 @@ object MO extends Vocabulary("http://purl.org/ontology/mo/") {
 }
 
 object OWL extends Vocabulary(jOWL.getURI) {
+  val Class = prop("Class")
   val sameAs = prop("sameAs")
 }
